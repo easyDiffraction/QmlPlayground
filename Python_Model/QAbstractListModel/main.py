@@ -12,6 +12,11 @@ from PySide2.QtCore import QAbstractListModel, QModelIndex, QByteArray
 ### MODEL
 #########
 
+# Qt Help:
+# Models can be created directly in QML using ListModel, XmlListModel or ObjectModel,
+# or provided by C++ model classes. If a C++ model class is used, it must be a subclass
+# of QAbstractItemModel or a simple list.
+
 class AtomSiteModel(QAbstractListModel):
     atom_site_label_role = Qt.UserRole + 1
     atom_site_fract_x_role = Qt.UserRole + 2

@@ -40,6 +40,12 @@ ApplicationWindow {
                 spacing: cellSpacing
 
                 // Use python model AtomSiteModel
+                // Qt Help:
+                // This property holds the model providing data for the list.
+                // The model provides the set of data that is used to create the items in the view.
+                // Models can be created directly in QML using ListModel, XmlListModel or ObjectModel,
+                // or provided by C++ model classes. If a C++ model class is used, it must be a subclass
+                // of QAbstractItemModel or a simple list.
                 model: atomSiteModel
 
                 // Table row view
