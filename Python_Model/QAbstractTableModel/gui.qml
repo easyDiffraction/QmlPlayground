@@ -127,6 +127,7 @@ ApplicationWindow {
                     implicitWidth: cellWidth
                     implicitHeight: cellHeight
                     color: row % 2 ? alternateRowBackgroundColor : rowBackgroundColor
+                    //color: column === 0 ? headerBackgroundColor : rowBackgroundColor
 
                     TextInput {
                         anchors.fill: parent
@@ -227,13 +228,8 @@ ApplicationWindow {
         // Button
         Button {
             Layout.fillWidth: true
-            text: 'Set data randomly: ' + experimentalDataModel.headerData(0, Qt.Horizontal)
-            onClicked: {
-                experimentalDataModel.setModelRandomly()
-                //experimentalDataModel.layoutChanged.emit()
-                print(experimentalDataModel.headerData(2, Qt.Horizontal))
-
-            }
+            text: 'Set data randomly' //+ experimentalDataModel.headerData(0, Qt.Horizontal)
+            onClicked: experimentalDataModel.setModelRandomly()
         }
         // Button
         //////////////////////////////////////////

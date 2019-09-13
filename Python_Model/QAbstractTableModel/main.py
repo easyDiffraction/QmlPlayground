@@ -21,6 +21,7 @@ from PySide2.QtCore import QAbstractListModel, QAbstractTableModel, QModelIndex,
 # EXAMPLES:
 # https://spine-toolbox.readthedocs.io/en/dev/_modules/models.html
 # https://github.com/eyllanesc/stackoverflow/blob/master/questions/55610163/main.qml
+# https://github.com/blikoon/QmlTableViewDemo
 
 class ExperimentalDataModel(QAbstractTableModel):
 
@@ -29,6 +30,7 @@ class ExperimentalDataModel(QAbstractTableModel):
         super().__init__(parent)
         self._header = list()
         self._data = list()
+        print(self.roleNames())
 
     def rowCount(self, parent=QModelIndex()):
         """Number of rows in the model."""
@@ -106,11 +108,12 @@ class ExperimentalDataModel(QAbstractTableModel):
 
     @Slot()
     def setModelRandomly(self):
-        """Random change of header and data in column=1."""
+        """Random change of header and data in columns 1 and 2."""
         for column in range(self.columnCount()):
             self.setHeaderData(column, Qt.Horizontal, random.choice(string.ascii_letters))
         for row in range(self.rowCount()):
             self.setData(self.index(row, 1), random.randrange(1000))
+            self.setData(self.index(row, 2), random.randrange(1000))
 
     #def appendRow(self, row):
     #    #for item in row:
@@ -123,11 +126,11 @@ class ExperimentalDataModel(QAbstractTableModel):
     #    bottom_right = self.index(last_row_index, last_column_index)
     #    self.dataChanged.emit(top_left, bottom_right, self.roleNames())
 
-    def appendRow(self, row):
-        self._data.append(row)
+    def _setData(self, data):
+        self._data = data
 
-    def setHeaderRow(self, row):
-        self._header = row
+    def _setHeaderData(self, header):
+        self._header = header
 
 ########
 ### MAIN
@@ -139,9 +142,8 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
 
     experimentalDataModel = ExperimentalDataModel()
-    experimentalDataModel.setHeaderRow(["Xobs", "Yobs", "sYobs"])
-    for i in range(10):
-        experimentalDataModel.appendRow([i, random.randrange(1000), 0.01])
+    experimentalDataModel._setHeaderData(["Xobs", "Ycalc", "Yobs"])
+    experimentalDataModel._setData([[i, random.randrange(1000), random.randrange(1000)] for i in range(10)])
 
     engine = QQmlApplicationEngine()
     engine.rootContext().setContextProperty("experimentalDataModel", experimentalDataModel)
