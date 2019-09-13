@@ -1,13 +1,8 @@
 import os, sys
-#import random, string
-#import numpy as np
 
 from PySide2.QtCore import QUrl, Qt, QCoreApplication
 from PySide2.QtWidgets import QApplication
 from PySide2.QtQml import QQmlApplicationEngine
-
-#from PySide2.QtCore import QObject, Signal, Slot, Property
-#from PySide2.QtCore import QAbstractListModel, QAbstractTableModel, QModelIndex, QByteArray
 
 if __name__ == '__main__':
     QCoreApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
