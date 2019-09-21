@@ -21,21 +21,36 @@ class ProjectModel(QObject):
 
     def initData(self):
         """Init data dict."""
+        num_points = 20
         self._data = {
             'phases': {
                 'Fe3O4': {
                     'cell': {
-                        'a': { 'value': 11.5, 'error': 0.2, 'refine': True },
-                        'b': { 'value': 11.5, 'error': 0.2, 'refine': True },
-                        'c': { 'value': 11.5, 'error': 0.2, 'refine': True },
+                        'a': { 'value': 9.5, 'error': 0.32, 'refine': True },
+                        'b': { 'value': 10.0, 'error': 0.22, 'refine': False },
+                        'c': { 'value': 11.2, 'error': 0.21, 'refine': False },
+                        'd': { 'value': 11.2, 'error': 0.21, 'refine': False },
+                        'e': { 'value': 11.2, 'error': 0.21, 'refine': False },
+                        'f': { 'value': 11.2, 'error': 0.21, 'refine': False },
+                    }
+                },
+                'impurity': {
+                    'cell': {
+                        'a': { 'value': 5.35, 'error': 0.32, 'refine': True },
+                        'b': { 'value': 4.28, 'error': 0.22, 'refine': False },
+                        'c': { 'value': 7.32, 'error': 0.21, 'refine': False },
                     }
                 }
             },
             'experiments': {
                 'pnd': {
                     'measured': {
-                        'ttheta': [1,2,3,4,5],
-                        'obs': [100,0,31,17,88]
+                        'ttheta': [i for i in range (num_points)],
+                        'obs': [random.randrange(100) for i in range (num_points)]
+                    },
+                    'calculated': {
+                        'ttheta': [i for i in range (num_points)],
+                        'calc': [random.randrange(100) for i in range (num_points)]
                     }
                 }
             }
@@ -46,64 +61,156 @@ class ProjectModel(QObject):
         return reduce(operator.getitem, keys, self._data)
 
     def setByPath(self, keys, value):
-        """Set a value in a nested object in root by key sequence."""
+        """Get a value in a nested object in root by key sequence."""
         self.getByPath(keys[:-1])[keys[-1]] = value
+
+    def setByPathAndIndex(self, keys, index, value):
+        """Set a value in a nested list by key sequence to list and index of the element within list."""
+        self.getByPath(keys[:-1])[keys[-1]][index] = value
+
+    def phasesCount(self):
+        return len(self._data['phases'].keys())
+
+    def experimentsCount(self):
+        return len(self._data['experiments'].keys())
+
+    def phasesIds(self):
+        return list(self._data['phases'].keys())
+
+    def experimentsIds(self):
+        return list(self._data['experiments'].keys())
 
     def asDict(self):
         """Return data dict."""
         return self._data
 
 #####################################################################
-class ExperimentalDataItemModel(QObject):
+class MeasuredDataItemModel(QObject):
     def __init__(self, project, parent=None):
         super().__init__(parent)
-        self._project = project
-        a = self._createDataFromProject(project)
-        self._model = self._createModelFromData(self._createDataFromProject(project))
+        self._headerModel, self._dataModel = self._createModelFromData(*self._createDataFromProject(project))
 
     def _createDataFromProject(self, project):
-        """Create the initial data 2d list with structure for GUI experimental data table and chart."""
+        """Create the initial data 2d list with structure for GUI measured data table and chart."""
         data = []
         headers = []
         project_dict = project.asDict()
         for experiment_id, experiment_dict in project_dict['experiments'].items():
             for data_id, data_list in experiment_dict['measured'].items():
+                headers.append(data_id)
                 data.append(data_list)
         data_transposed = [*zip(*data)]
-        return data_transposed
+        return headers, data_transposed
 
-    def _createModelFromData(self, data):
-        """Create the model needed for GUI experimental data table and chart (based on data 2d list created previously)."""
+    def _createModelFromData(self, headers, data):
+        """Create the model needed for GUI measured data table and chart (based on data 2d list created previously)."""
         row_count = len(data)
-        column_ount = len(data[0])
-        model = QStandardItemModel(row_count, column_ount)
+        column_count = len(data[0])
+        # set headers
+        headerModel = QStandardItemModel(1, column_count)
+        for column_index in range(column_count):
+            index = headerModel.index(0, column_index)
+            value = headers[column_index]
+            headerModel.setData(index, value, Qt.DisplayRole) #Qt.WhatsThisRole
         # set model data
+        dataModel = QStandardItemModel(row_count, column_count)
         for row_index in range(row_count):
-            for column_index in range(column_ount):
-                index = model.index(row_index, column_index)
+            for column_index in range(column_count):
+                index = dataModel.index(row_index, column_index)
                 value = data[row_index][column_index]
-                role = Qt.DisplayRole
-                model.setData(index, value, role)
-        return model
+                dataModel.setData(index, value, Qt.DisplayRole)
+        return headerModel, dataModel
+
+    def asHeaderModel(self):
+        """Return header model."""
+        return self._headerModel
+
+    def asDataModel(self):
+        """Return data model."""
+        return self._dataModel
+
+#####################################################################
+class CalculatedDataItemModel(QObject):
+    def __init__(self, project, parent=None):
+        super().__init__(parent)
+        self._project = project
+        self._headerModel, self._dataModel = self._createModelFromData(*self._createDataFromProject())
+        self._dataModel.dataChanged.connect(self.onModelChanged)
+
+    def _createDataFromProject(self):
+        """Create the initial data 2d list with structure for GUI calculated data table and chart."""
+        project_dict = self._project.asDict()
+        data_blocks = {}
+        headers_blocks = {}
+        for experiment_id, experiment_dict in project_dict['experiments'].items():
+            data = []
+            headers = []
+            for data_id, data_list in experiment_dict['calculated'].items():
+                headers.append(data_id)
+                data.append(data_list)
+            headers_blocks[experiment_id] = headers
+            data_transposed = [*zip(*data)]
+            data_blocks[experiment_id] = data_transposed
+        return headers_blocks, data_blocks
+
+    def _createModelFromData(self, headers_blocks, data_blocks):
+        """Create the model needed for GUI calculated data table and chart (based on data 2d list created previously)."""
+        if self._project.experimentsCount() > 1:
+            print("Currently, only 1 measured datablock is supported. Given: ", self._project.experimentsCount())
+        experiment_id = self._project.experimentsIds()[0] # only 1st measured datablock is currently taken into account
+        headers, data = headers_blocks[experiment_id], data_blocks[experiment_id]
+        row_count = len(data)
+        column_count = len(data[0])
+        # set headers
+        headerModel = QStandardItemModel(1, column_count)
+        for column_index in range(column_count):
+            index = headerModel.index(0, column_index)
+            value = headers[column_index]
+            headerModel.setData(index, value, Qt.DisplayRole) #Qt.WhatsThisRole
+        # set model data
+        dataModel = QStandardItemModel(row_count, column_count)
+        for row_index in range(row_count):
+            for column_index in range(column_count):
+                index = dataModel.index(row_index, column_index)
+                value = data[row_index][column_index]
+                dataModel.setData(index, value, Qt.DisplayRole)
+        return headerModel, dataModel
 
     modelChanged = Signal()
 
-    def asModel(self):
-        """Return model."""
-        return self._model
+    def onModelChanged(self, top_left_index, bottom_right_index, roles):
+        """Define what to do if model is changed, e.g. from GUI."""
+        self.updateProject(top_left_index, roles[0])
+        self.modelChanged.emit()
+
+    def updateProject(self, index, data_role):
+        """Update project element, which is changed in the model, depends on its index and role."""
+        row_index = index.row()
+        value = self._dataModel.data(index, data_role)
+        experiment_id = self._project.experimentsIds()[0] # only 1st measured datablock is currently taken into account
+        keys = ["experiments", experiment_id, "calculated", "calc"]
+        self._project.setByPathAndIndex(keys, row_index, value)
+
+    def asHeaderModel(self):
+        """Return header model."""
+        return self._headerModel
+
+    def asDataModel(self):
+        """Return data model."""
+        return self._dataModel
 
 #####################################################################
 class FitablesItemModel(QObject):
     def __init__(self, project, parent=None):
         super().__init__(parent)
         self._project = project
-        self._model = self._createModelFromData(self._createDataFromProject(project))
+        self._model = self._createModelFromData(self._createDataFromProject())
         self._model.dataChanged.connect(self.onModelChanged)
 
-    def _createDataFromProject(self, project):
+    def _createDataFromProject(self):
         """Create the initial data list with structure for GUI fitables table."""
         data = []
-        project_dict = project.asDict()
+        project_dict = self._project.asDict()
         for phase_id, phase_dict in project_dict['phases'].items():
             for fitable_id, fitable_dict in phase_dict['cell'].items():
                 data.append({
@@ -120,9 +227,9 @@ class FitablesItemModel(QObject):
         model = QStandardItemModel()
         model.setRowCount(len(data))
         model.setColumnCount(1)#model.setColumnCount(len(data[0]))
+        # set model role names
         start_role = Qt.UserRole + 1
         role_names = {}
-        # set model role names
         for key, _ in data[0].items():
             column_index = list(data[0].keys()).index(key)
             role = start_role + column_index
@@ -162,8 +269,9 @@ class Proxy(QObject):
     def __init__(self, parent=None):
         super().__init__(parent)
         self._projectModel = ProjectModel()
-        self._experimentalDataModel = ExperimentalDataItemModel(self._projectModel)
-        self._experimentalDataModel.modelChanged.connect(self.projectChanged)
+        self._measuredDataModel = MeasuredDataItemModel(self._projectModel)
+        self._calculatedDataModel = CalculatedDataItemModel(self._projectModel)
+        self._calculatedDataModel.modelChanged.connect(self.projectChanged)
         self._fitablesModel = FitablesItemModel(self._projectModel)
         self._fitablesModel.modelChanged.connect(self.projectChanged)
 
@@ -173,11 +281,29 @@ class Proxy(QObject):
         return self._projectModel.asDict()
     project = Property('QVariant', getProject, notify=projectChanged)
 
-    # Experimental data model for QML
-    experimentalDataChanged = Signal()
-    def getExperimentalData(self):
-        return self._experimentalDataModel.asModel()
-    experimentalData = Property('QVariant', getExperimentalData, notify=experimentalDataChanged)
+    # Measured data header model for QML
+    measuredDataHeaderChanged = Signal()
+    def getMeasuredDataHeader(self):
+        return self._measuredDataModel.asHeaderModel()
+    measuredDataHeader = Property('QVariant', getMeasuredDataHeader, notify=measuredDataHeaderChanged)
+
+    # Measured data model for QML
+    measuredDataChanged = Signal()
+    def getCalculatedData(self):
+        return self._measuredDataModel.asDataModel()
+    measuredData = Property('QVariant', getCalculatedData, notify=measuredDataChanged)
+
+    # Calculated data header model for QML
+    calculatedDataHeaderChanged = Signal()
+    def getCalculatedDataHeader(self):
+        return self._calculatedDataModel.asHeaderModel()
+    calculatedDataHeader = Property('QVariant', getCalculatedDataHeader, notify=calculatedDataHeaderChanged)
+
+    # Calculated data model for QML
+    calculatedDataChanged = Signal()
+    def getMeasuredData(self):
+        return self._calculatedDataModel.asDataModel()
+    calculatedData = Property('QVariant', getMeasuredData, notify=calculatedDataChanged)
 
     # Fitables model for QML
     fitablesChanged = Signal()
@@ -186,9 +312,9 @@ class Proxy(QObject):
     fitables = Property('QVariant', getFitables, notify=fitablesChanged)
 
     @Slot()
-    def updateExperimentalDataModelRandomly(self):
+    def updateCalculatedDataModelRandomly(self):
         """Random change of data in all columns but 1st."""
-        model = self._experimentalDataModel.asModel()
+        model = self._calculatedDataModel.asDataModel()
         for column_index in range(1, model.columnCount()):
             for row_index in range(model.rowCount()):
                 index = model.index(row_index, column_index)

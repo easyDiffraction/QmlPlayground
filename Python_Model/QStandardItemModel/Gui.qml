@@ -3,120 +3,136 @@ import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 import QtCharts 2.13
 
+import "." as Custom
+
 ApplicationWindow {
     id: window
     visible: true
-    width: 1000
+    width: 750
     height: 1000
 
-    property string rowBackgroundColor: 'white'
-    property string alternateRowBackgroundColor: '#f7f7f7'
-    property string headerBackgroundColor: '#eee'
-    property string rowBorderColor: '#e8e8e8'
-    property string headerBorderColor: '#dedede'
-    property string headerTextColor: '#666'
-
-    property int borderWidth: 1
-    property int cellWidth: 150
-    property int cellHeight: 24
-
     property var startTime: Date.now()
+    property var endTime: Date.now()
 
     Column {
         anchors.fill: parent
         anchors.margins: 10
         spacing: 10
 
-        //////////////////////////////////////////
         // project (Text)
-        Text { wrapMode: Text.Wrap; width: parent.width; text: "project: " + JSON.stringify(proxy.project); color: "blue" }
-        // project (Text)
-        //////////////////////////////////////////
 
-        Item { height: 0.5*cellHeight; width: 1 }
+        Text { text: "measuredData (TableView)"; color: "red" }
 
-        //////////////////////////////////////////
-        // experimentalData (TableView)
-        Text { text: "experimentalData (TableView)"; color: "red" }
-        Rectangle { width: parent.width; height: cellHeight * proxy.experimentalData.rowCount(); border.color: headerBorderColor; Row { spacing: 20
-                TableView { width: cellWidth; height: parent.parent.height; columnSpacing: 20
-                    model: proxy.experimentalData
-                    delegate: Text { text: display }
+        ScrollView {
+            width: parent.width
+            height: 150
+
+            TextArea {
+                wrapMode: Text.Wrap
+                text: "project: " + JSON.stringify(proxy.project)
+                color: "blue"
+            }
+
+        }
+
+        // spacer
+
+        Item { height: 15; width: 1 }
+
+        // measuredData and calculated (TableView)
+
+        Text { text: "measuredData and calculatedData (TableView)"; color: "red" }
+
+        Row {
+            width: parent.width
+            height: childrenRect.height
+            spacing: 10
+
+            Custom.TableView {
+                headerModel: proxy.measuredDataHeader
+                dataModel: proxy.measuredData
+            }
+
+            Custom.TableView {
+                editable: true
+                headerModel: proxy.calculatedDataHeader
+                dataModel: proxy.calculatedData
+            }
+        }
+
+        // spacer
+
+        Item { height: 15; width: 1 }
+
+        // measuredData (ChartView)
+
+        Text { text: "measuredData (ChartView)"; color: "red" }
+
+        Custom.ChartView {
+
+            LineSeries {
+                name: "Iobs"
+
+                VXYModelMapper{
+                    model: proxy.measuredData
+                    xColumn: 0
+                    yColumn: 1
                 }
-            }}
-        // experimentalData (TableView)
-        //////////////////////////////////////////
+            }
 
-        Item { height: 0.5*cellHeight; width: 1 }
+            LineSeries {
+                name: "Icalc"
 
-        //////////////////////////////////////////
-        // experimentalData (ChartView)
-        Text { text: "experimentalData (ChartView)"; color: "red" }
-        Rectangle { width: parent.width; height: cellHeight * 12; border.color: headerBorderColor
-            ChartView { width: parent.width; height: parent.height
-                LineSeries {
-                    //name: mapperX.model.header(mapper.yColumn) // not updated automatically, how to fix?
-                    //name: proxy.pyListOfInt2dHeader[mapperX.yColumn] // not updated automatically, how to fix?
-                    VXYModelMapper{ id: mapperX; model: proxy.experimentalData; xColumn: 0; yColumn: 1 }
+                VXYModelMapper{
+                    model: proxy.calculatedData
+                    xColumn: 0
+                    yColumn: 1
                 }
             }
         }
-        Item { height: 0.5*cellHeight; width: 1 }
-        // experimentalData (ChartView)
-        //////////////////////////////////////////
 
-        Item { height: 0.5*cellHeight; width: 1 }
+        // spacer
 
-        //////////////////////////////////////////
+        Item { height: 15; width: 1 }
+
         // fitables (ListView)
+
         Text { text: "fitables (ListView)"; color: "red" }
-        Rectangle { width: parent.width; height: cellHeight * (proxy.fitables.rowCount() + 1); border.color: headerBorderColor; Row { spacing: 20
-                ListView {width: cellWidth; height: parent.parent.height
-                    model: proxy.fitables
-                    header: Row { spacing: 20
-                        Text { text: "Value" }
-                        Text { text: "Error" }
-                        Text { text: "Refine" }
-                    }
-                    delegate: Row { spacing: 20
-                        TextInput { text: value; onEditingFinished: value = text }
-                        TextInput { text: error; onEditingFinished: error = text }
-                        CheckBox { checked: refine; onToggled: refine = checked; height: cellHeight }
-                    }
-                }
-                ListView { width: cellWidth; height: parent.parent.height
-                    model: proxy.fitables
-                    header: Row { spacing: 20
-                        Text { text: "Value" }
-                        Text { text: "Error" }
-                        Text { text: "Refine" }
-                    }
-                    delegate: Row { spacing: 20
-                        TextInput { text: value; onEditingFinished: value = text }
-                        TextInput { text: error; onEditingFinished: error = text }
-                        CheckBox { checked: refine; onToggled: refine = checked; height: cellHeight }
-                    }
-                }
-            }}
-        // fitables (ListView)
-        //////////////////////////////////////////
 
-        //////////////////////////////////////////
-        // Button
-        Button {
-            text: 'Random change of experimental data'
-            onClicked: {
-                //print(JSON.stringify(proxy.project))
-                //print(proxy.experimentalData.rowCount())
-                proxy.updateExperimentalDataModelRandomly()
+        Row {
+            width: parent.width
+            height: childrenRect.height
+            spacing: 10
+
+            Custom.FitablesView {
+                width: (parent.width - parent.spacing) / 2
+                model: proxy.fitables
+            }
+
+            Custom.FitablesView {
+                width: (parent.width - parent.spacing) / 2
+                model: proxy.fitables
             }
         }
+
         // Button
-        //////////////////////////////////////////
+
+        Button {
+            text: 'Random change of calculated data'
+            onClicked: {
+                startTime = Date.now()
+                proxy.updateCalculatedDataModelRandomly()
+                endTime = Date.now()
+                print("Duration:", endTime - startTime, "ms")
+            }
+        }
 
     }
 
     // Profiling
-    Component.onCompleted: print("Duration:", Date.now() - startTime, "ms")
+    Component.onCompleted: {
+        endTime = Date.now()
+        print("Duration:", endTime - startTime, "ms")
+    }
 }
 
