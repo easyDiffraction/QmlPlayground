@@ -14,117 +14,124 @@ ApplicationWindow {
     property var startTime: Date.now()
     property var endTime: Date.now()
 
-    Column {
-        anchors.fill: parent
-        anchors.margins: 10
-        spacing: 10
+    ScrollView {
+        height: parent.height
+        contentWidth: parent.width - padding * 2
+        padding: 10
 
-        // project (Text)
-
-        Text { text: "measuredData (TableView)"; color: "red" }
-
-        ScrollView {
+        Column {
             width: parent.width
-            height: 150
-
-            TextArea {
-                wrapMode: Text.Wrap
-                text: "project: " + JSON.stringify(proxy.project)
-                color: "blue"
-            }
-
-        }
-
-        // spacer
-
-        Item { height: 15; width: 1 }
-
-        // measuredData and calculated (TableView)
-
-        Text { text: "measuredData and calculatedData (TableView)"; color: "red" }
-
-        Row {
-            width: parent.width
-            height: childrenRect.height
+            height: parent.height
             spacing: 10
 
-            Custom.TableView {
-                headerModel: proxy.measuredDataHeader
-                dataModel: proxy.measuredData
+            // project (Text)
+
+            Text { text: "measuredData (TableView)"; color: "red" }
+
+            ScrollView {
+                width: parent.width
+                height: 150
+
+                TextArea {
+                    wrapMode: Text.Wrap
+                    text: "project: " + JSON.stringify(proxy.project)
+                    color: "blue"
+                }
+
             }
 
-            Custom.TableView {
-                editable: true
-                headerModel: proxy.calculatedDataHeader
-                dataModel: proxy.calculatedData
-            }
-        }
+            // spacer
 
-        // spacer
+            Item { height: 15; width: 1 }
 
-        Item { height: 15; width: 1 }
+            // measuredData and calculated (TableView)
 
-        // measuredData (ChartView)
+            Text { text: "measuredData and calculatedData (TableView)"; color: "red" }
 
-        Text { text: "measuredData (ChartView)"; color: "red" }
+            Row {
+                width: parent.width
+                height: childrenRect.height
+                spacing: 10
 
-        Custom.ChartView {
+                Custom.TableView {
+                    headerModel: proxy.measuredDataHeader
+                    dataModel: proxy.measuredData
+                }
 
-            LineSeries {
-                name: "Iobs"
-
-                VXYModelMapper{
-                    model: proxy.measuredData
-                    xColumn: 0
-                    yColumn: 1
+                Custom.TableView {
+                    editable: true
+                    headerModel: proxy.calculatedDataHeader
+                    dataModel: proxy.calculatedData
                 }
             }
 
-            LineSeries {
-                name: "Icalc"
+            // spacer
 
-                VXYModelMapper{
-                    model: proxy.calculatedData
-                    xColumn: 0
-                    yColumn: 1
+            Item { height: 15; width: 1 }
+
+            // measuredData (ChartView)
+
+            Text { text: "measuredData (ChartView)"; color: "red" }
+
+            Custom.ChartView {
+
+                LineSeries {
+                    name: "Iobs"
+
+                    VXYModelMapper{
+                        model: proxy.measuredData
+                        xColumn: 0
+                        yColumn: 1
+                    }
+                }
+
+                LineSeries {
+                    name: "Icalc"
+
+                    VXYModelMapper{
+                        model: proxy.calculatedData
+                        xColumn: 0
+                        yColumn: 1
+                    }
                 }
             }
-        }
 
-        // spacer
+            // spacer
 
-        Item { height: 15; width: 1 }
+            Item { height: 15; width: 1 }
 
-        // fitables (ListView)
+            // fitables (ListView)
 
-        Text { text: "fitables (ListView)"; color: "red" }
+            Text { text: "fitables (ListView)"; color: "red" }
 
-        Row {
-            width: parent.width
-            height: childrenRect.height
-            spacing: 10
+            Row {
+                width: parent.width
+                height: childrenRect.height
+                spacing: 10
 
-            Custom.FitablesView {
-                width: (parent.width - parent.spacing) / 2
-                model: proxy.fitables
+                Custom.FitablesView {
+                    width: (parent.width - parent.spacing) / 2
+                    model: proxy.fitables
+                }
+
+                Custom.FitablesView {
+                    width: (parent.width - parent.spacing) / 2
+                    model: proxy.fitables
+                }
             }
 
-            Custom.FitablesView {
-                width: (parent.width - parent.spacing) / 2
-                model: proxy.fitables
-            }
-        }
+            // Button
 
-        // Button
-
-        Button {
-            text: 'Random change of calculated data'
-            onClicked: {
-                startTime = Date.now()
-                proxy.updateCalculatedDataModelRandomly()
-                endTime = Date.now()
-                print("Duration:", endTime - startTime, "ms")
+            Button {
+                text: 'Random change of calculated data'
+                onClicked: {
+                    startTime = Date.now()
+                    proxy.updateCalculatedDataModelRandomly()
+                    endTime = Date.now()
+                    print("Duration:", endTime - startTime, "ms")
+                }
             }
+
         }
 
     }
