@@ -29,9 +29,6 @@ class ProjectModel(QObject):
                         'a': { 'value': 9.5, 'error': 0.32, 'refine': True },
                         'b': { 'value': 10.0, 'error': 0.22, 'refine': False },
                         'c': { 'value': 11.2, 'error': 0.21, 'refine': False },
-                        'd': { 'value': 11.2, 'error': 0.21, 'refine': False },
-                        'e': { 'value': 11.2, 'error': 0.21, 'refine': False },
-                        'f': { 'value': 11.2, 'error': 0.21, 'refine': False },
                     }
                 },
                 'impurity': {

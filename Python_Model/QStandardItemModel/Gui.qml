@@ -14,6 +14,8 @@ ApplicationWindow {
     property var startTime: Date.now()
     property var endTime: Date.now()
 
+    property string currentPhaseId: Object.keys(proxy.project.phases)[0]
+
     ScrollView {
         height: parent.height
         contentWidth: parent.width - padding * 2
@@ -119,6 +121,51 @@ ApplicationWindow {
                     model: proxy.fitables
                 }
             }
+
+            // spacer
+
+            Item { height: 15; width: 1 }
+
+            // selector (ListView)
+
+            Text { text: "selector (ListView)"; color: "red" }
+
+            ListView {
+                id: phasesList
+                width: parent.width
+                height: childrenRect.height
+                focus: true
+                highlight: Rectangle { color: "orange"; opacity: 0.3 }
+                model: Object.keys(proxy.project.phases)
+                delegate: Text {
+                    width: parent.width
+                    text: modelData
+                    MouseArea {
+                        anchors.fill: parent
+                        propagateComposedEvents: true
+                        acceptedButtons: Qt.LeftButton
+                        onPressed: {
+                            currentPhaseId = text
+                            phasesList.currentIndex = index
+                            mouse.accepted = false
+                        }
+                    }
+                }
+            }
+            ListView {
+                width: parent.width
+                height: childrenRect.height
+                model: 1
+                delegate: Row {
+                    Text { width: 100; text: proxy.project.phases[currentPhaseId].cell.a.value }
+                    Text { width: 100; text: proxy.project.phases[currentPhaseId].cell.b.value }
+                    Text { width: 100; text: proxy.project.phases[currentPhaseId].cell.c.value }
+                }
+            }
+
+            // spacer
+
+            Item { height: 15; width: 1 }
 
             // Button
 
