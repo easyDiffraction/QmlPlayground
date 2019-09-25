@@ -112,7 +112,7 @@ ApplicationWindow {
                 spacing: 10
 
                 Custom.FitablesView {
-                    //id: fitablesTable
+                    id: fitablesTable
                     width: (parent.width - parent.spacing) / 2
                     model: proxy.fitables
                 }
@@ -149,6 +149,7 @@ ApplicationWindow {
                             currentPhaseId = text
                             phasesList.currentIndex = index
                             mouse.accepted = false
+                            print("####", currentPhaseId)
                         }
                     }
                 }
@@ -182,6 +183,7 @@ ApplicationWindow {
                 onClicked: {
                     startTime = Date.now()
                     const res = proxy.refine()
+                    //print("res", res)
                     endTime = Date.now()
                     print("Duration:", endTime - startTime, "ms")
                     infoLabel.text = `${res.refinement_message}`

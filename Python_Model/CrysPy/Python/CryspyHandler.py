@@ -375,6 +375,20 @@ class CryspyHandler(QObject):
                 'constraint': experiment.offset.constraint,
                 'refine': experiment.offset.refinement }
 
+            # Scale
+            # ONLY 1st scale parameter is currently taken into account!!!
+            self._experiments_dict[experiment.label]['phase'] = {}
+            self._experiments_dict[experiment.label]['phase']['scale'] = {
+                'header': '',
+                'tooltip': '',
+                'url': '',
+                'value': experiment.phase.scale[0].value,
+                'error': experiment.phase.scale[0].sigma,
+                'min': experiment.phase.scale[0].value * 0.8,
+                'max': experiment.phase.scale[0].value * 1.2,
+                'constraint': experiment.phase.scale[0].constraint,
+                'refine': experiment.phase.scale[0].refinement }
+
             # Background
             self._experiments_dict[experiment.label]['background'] = {}
             for ttheta, intensity in zip(experiment.background.ttheta, experiment.background.intensity):
@@ -583,6 +597,11 @@ class CryspyHandler(QObject):
             experiment.offset.value = self._experiments_dict[experiment.label]['offset']['value']
             experiment.offset.refinement = self._experiments_dict[experiment.label]['offset']['refine']
 
+            # Scale
+            # ONLY 1st scale parameter is currently taken into account!!!
+            experiment.phase.scale[0].value = self._experiments_dict[experiment.label]['phase']['scale']['value']
+            experiment.phase.scale[0].refinement = self._experiments_dict[experiment.label]['phase']['scale']['refine']
+
             # Background
             for ttheta, intensity in zip(experiment.background.ttheta, experiment.background.intensity):
                 index = str(ttheta)
@@ -651,7 +670,7 @@ class CryspyHandler(QObject):
                 "nfev":scipy_refinement_res.nfev,
                 "nit":scipy_refinement_res.nit,
                 "njev":scipy_refinement_res.njev,
-                "final_chi_sq":scipy_refinement_res.fun,
+                "final_chi_sq":float(scipy_refinement_res.fun),
             }
         except:
              return { "refinement_message":"Unknow problems during refinement" }

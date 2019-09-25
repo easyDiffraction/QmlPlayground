@@ -51,8 +51,6 @@ class FitablesModel(QObject):
                                                     'refine': level_5_values['refine']
                                                 })
 
-
-
     def _setModelFromData(self):
         """Create the model needed for GUI fitables table (based on data dict created previously)."""
         ##self._model.clear() # ! Crashes app without clear error message!

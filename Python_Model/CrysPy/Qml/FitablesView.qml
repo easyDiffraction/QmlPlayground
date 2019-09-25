@@ -4,8 +4,6 @@ import QtQuick.Controls 2.12
 Column {
     property alias model: contentListView.model
 
-    //property int currentIndexX: -1
-
     property int borderWidth: 1
     property int cellHeight: 38
     property int rowCountToDisplayWithoutHeader: 10
@@ -17,7 +15,6 @@ Column {
     property string highlightedRowForegroundColor: "white"
     property string headerBackgroundColor: '#eee'
     property string headerBorderColor: '#dedede'
-
 
     spacing: 6
 
@@ -176,7 +173,10 @@ Column {
                             rightPadding: leftPadding
                             text: typeof value === 'number' ? value.toFixed(4) : value
                             color: foregroundColor()
-                            onEditingFinished: valueEdit = text
+                            onEditingFinished: {
+                                valueEdit = text
+                                slider.value = text
+                            }
                         }
                         Text {
                             width: cellWidthProvider(4)
