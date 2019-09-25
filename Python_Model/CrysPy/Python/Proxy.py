@@ -14,12 +14,13 @@ from Python.FitablesModel import *
 class Proxy(QObject):
     def __init__(self, main_rcif_path, parent=None):
         super().__init__(parent)
+        logging.info("")
         self._project_model = CryspyHandler(main_rcif_path)
         self._measured_data_model = MeasuredDataModel(self._project_model)
         self._calculated_data_model = CalculatedDataModel(self._project_model)
         self._calculated_data_model.modelChanged.connect(self.projectChanged)
         self._fitables_model = FitablesModel(self._project_model)
-        self._fitables_model.modelChanged.connect(self.projectChanged)
+        ##self._fitables_model.modelChanged.connect(self.projectChanged)
 
     # Project model for QML
     projectChanged = Signal()
@@ -35,9 +36,9 @@ class Proxy(QObject):
 
     # Measured data model for QML
     measuredDataChanged = Signal()
-    def getCalculatedData(self):
+    def getMeasuredData(self):
         return self._measured_data_model.asDataModel()
-    measuredData = Property('QVariant', getCalculatedData, notify=measuredDataChanged)
+    measuredData = Property('QVariant', getMeasuredData, notify=measuredDataChanged)
 
     # Calculated data header model for QML
     calculatedDataHeaderChanged = Signal()
@@ -47,9 +48,9 @@ class Proxy(QObject):
 
     # Calculated data model for QML
     calculatedDataChanged = Signal()
-    def getMeasuredData(self):
+    def getCalculatedData(self):
         return self._calculated_data_model.asDataModel()
-    calculatedData = Property('QVariant', getMeasuredData, notify=calculatedDataChanged)
+    calculatedData = Property('QVariant', getCalculatedData, notify=calculatedDataChanged)
 
     # Fitables model for QML
     fitablesChanged = Signal()
@@ -60,9 +61,5 @@ class Proxy(QObject):
     @Slot(result='QVariant')
     def refine(self):
         """refinement ..."""
-        #logging.info("")
         res = self._project_model.refine()
-        print(res, type(res))
         return res
-        #logging.info("")
-

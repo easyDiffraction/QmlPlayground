@@ -45,7 +45,7 @@ ApplicationWindow {
 
             // spacer
 
-            Item { height: 15; width: 1 }
+            Item { height: 5; width: 1 }
 
             // measuredData and calculated (TableView)
 
@@ -69,7 +69,7 @@ ApplicationWindow {
 
             // spacer
 
-            Item { height: 15; width: 1 }
+            Item { height: 5; width: 1 }
 
             // measuredData (ChartView)
 
@@ -100,7 +100,7 @@ ApplicationWindow {
 
             // spacer
 
-            Item { height: 15; width: 1 }
+            Item { height: 5; width: 1 }
 
             // fitables (ListView)
 
@@ -112,19 +112,20 @@ ApplicationWindow {
                 spacing: 10
 
                 Custom.FitablesView {
+                    //id: fitablesTable
                     width: (parent.width - parent.spacing) / 2
                     model: proxy.fitables
                 }
 
-                Custom.FitablesView {
-                    width: (parent.width - parent.spacing) / 2
-                    model: proxy.fitables
-                }
+                //Custom.FitablesView {
+                //    width: (parent.width - parent.spacing) / 2
+                //    model: proxy.fitables
+                //}
             }
 
             // spacer
 
-            Item { height: 15; width: 1 }
+            Item { height: 5; width: 1 }
 
             // selector (ListView)
 
@@ -148,7 +149,6 @@ ApplicationWindow {
                             currentPhaseId = text
                             phasesList.currentIndex = index
                             mouse.accepted = false
-                            print("####", currentPhaseId)
                         }
                     }
                 }
@@ -157,25 +157,31 @@ ApplicationWindow {
                 width: parent.width
                 height: childrenRect.height
                 model: 1
-                delegate: Row {
-                    Text { height: 30; width: 100; text: proxy.project.phases[currentPhaseId].cell.length_a.value }
-                    Text { height: 30; width: 100; text: proxy.project.phases[currentPhaseId].cell.length_b.value }
-                    Text { height: 30; width: 100; text: proxy.project.phases[currentPhaseId].cell.length_c.value }
+                delegate: Column {
+                    Row {
+                        Text { height: 20; width: 200; text: proxy.project.phases[currentPhaseId].cell.length_a.header }
+                        Text { height: 20; width: 200; text: proxy.project.phases[currentPhaseId].cell.length_b.header }
+                        Text { height: 20; width: 200; text: proxy.project.phases[currentPhaseId].cell.length_c.header }
+                    }
+                    Row {
+                        Text { height: 20; width: 200; text: proxy.project.phases[currentPhaseId].cell.length_a.value }
+                        Text { height: 20; width: 200; text: proxy.project.phases[currentPhaseId].cell.length_b.value }
+                        Text { height: 20; width: 200; text: proxy.project.phases[currentPhaseId].cell.length_c.value }
+                    }
                 }
             }
 
             // spacer
 
-            Item { height: 15; width: 1 }
+            Item { height: 5; width: 1 }
 
             // Button
 
             Button {
-                text: 'Random change of calculated data'
+                text: 'Start refinement'
                 onClicked: {
                     startTime = Date.now()
                     const res = proxy.refine()
-                    print("res", res)
                     endTime = Date.now()
                     print("Duration:", endTime - startTime, "ms")
                     infoLabel.text = `${res.refinement_message}`

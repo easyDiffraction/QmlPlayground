@@ -7,6 +7,7 @@ logging.basicConfig(format="%(asctime)-15s [%(levelname)s] %(filename)s %(funcNa
 class MeasuredDataModel(QObject):
     def __init__(self, project, parent=None):
         super().__init__(parent)
+        logging.info("")
         self._headers_model, self._data_model = self._createModelsFromHeadersAndData(*self._createHeadersAndDataFromProject(project))
 
     def _createHeadersAndDataFromProject(self, project):

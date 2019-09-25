@@ -13,7 +13,22 @@ if __name__ == '__main__':
 
     current_dir = os.path.dirname(sys.argv[0])
     qml_gui_path = os.path.join(current_dir, "Gui.qml")
-    main_rcif_path = os.path.join(current_dir, "cryspy-master", "examples", "Fe3O4_0T_powder_1d_cell", "main.rcif")
+    main_rcif_path = os.path.join(current_dir, "cryspy-master", "examples", "Fe3O4_0T_powder_1d", "main.rcif")
+
+    # --- modify rcif ---
+    main_rcif_content = ""
+    with open(main_rcif_path, 'r') as f:
+        for line in f.readlines():
+            if '_cell_length_a' in line:
+                line = '_cell_length_a 8.7' + '\r\n' # 8.6 very long. 8.7 ok. 8.5621 fitted.
+            if 'Fe3A cani' in line:
+                line = 'Fe3A cani  -2.2 -3.46822 -3.46822 0.0 0.0 0.0' + '\r\n'
+            if 'Fe3B cani' in line:
+                line = 'Fe3B cani   1.1  3.041    3.041   0.0 0.0 0.0' + '\r\n'
+            main_rcif_content += line
+    with open(main_rcif_path, 'w') as f:
+        f.write(main_rcif_content)
+    # --- modify rcif ---
 
     proxy = Proxy(main_rcif_path)
 

@@ -7,6 +7,7 @@ logging.basicConfig(format="%(asctime)-15s [%(levelname)s] %(filename)s %(funcNa
 class CalculatedDataModel(QObject):
     def __init__(self, project, parent=None):
         super().__init__(parent)
+        logging.info("")
         self._project = project
         self._headers_dict = {}
         self._data_dict = {}
@@ -73,3 +74,7 @@ class CalculatedDataModel(QObject):
     def asDataModel(self):
         """Return data model."""
         return self._data_model
+
+    def asDataDict(self):
+        """Return ..."""
+        return self._data_dict
