@@ -18,6 +18,7 @@ Column {
     property string headerBackgroundColor: '#eee'
     property string headerBorderColor: '#dedede'
 
+
     spacing: 6
 
     function cellWidthProvider(column) {
@@ -210,6 +211,15 @@ Column {
                 }
                 // Content row
 
+                onCurrentIndexChanged: {
+                    slider.from = model.data(model.index(currentIndex, 0), Qt.UserRole + 5)
+                    slider.to = model.data(model.index(currentIndex, 0), Qt.UserRole + 6)
+                    slider.value = model.data(model.index(currentIndex, 0), Qt.UserRole + 3)
+                    //slider.stepSize = 0.1
+                    sliderFromLabel.text = slider.from.toFixed(4)
+                    sliderToLabel.text = slider.to.toFixed(4)
+                }
+
             }
         }
     }
@@ -222,7 +232,7 @@ Column {
         spacing: 10
 
         Label {
-            id: min
+            id: sliderFromLabel
             width: 80
             height: parent.height
             verticalAlignment: Text.AlignVCenter
@@ -230,30 +240,42 @@ Column {
             leftPadding: font.pixelSize
             rightPadding: leftPadding
             background: Rectangle { border.width: borderWidth; border.color: headerBorderColor }
-            text: contentListView.model.data(contentListView.model.index(contentListView.currentIndex, 0), Qt.UserRole + 5).toFixed(4)
         }
+
         Slider {
-            width: parent.width - parent.spacing * 2 - min.width - max.width;
+            id: slider
+            width: parent.width - parent.spacing * 2 - sliderFromLabel.width - sliderToLabel.width
             height: parent.height
-            from: contentListView.model.data(contentListView.model.index(contentListView.currentIndex, 0), Qt.UserRole + 5)
-            value: contentListView.model.data(contentListView.model.index(contentListView.currentIndex, 0), Qt.UserRole + 3)
-            to: contentListView.model.data(contentListView.model.index(contentListView.currentIndex, 0), Qt.UserRole + 6)
-            onMoved: contentListView.model.setData(contentListView.model.index(contentListView.currentIndex, 0), value, Qt.UserRole + 103)
-            Component.onCompleted: {
-                //contentListView.currentIndex = 1
-                //contentListView.currentIndex = 0
+
+            handle: Rectangle {
+                id: sliderHandle
+                x: slider.leftPadding + slider.visualPosition * (slider.availableWidth - width)
+                y: slider.topPadding + slider.availableHeight / 2 - height / 2
+                implicitWidth: 26
+                implicitHeight: 26
+                radius: 13
+                color: slider.pressed ? "#f0f0f0" : "#f6f6f6"
+                border.color: "#bdbebf"
+                ToolTip.visible: slider.pressed
+                ToolTip.text: slider.value.toFixed(4)
+            }
+
+            onPressedChanged: {
+                if (!pressed) {
+                    contentListView.model.setData(contentListView.model.index(contentListView.currentIndex, 0), value, Qt.UserRole + 103)
+                }
             }
         }
+
         Label {
-            id: max
-            width: min.width
+            id: sliderToLabel
+            width: sliderFromLabel.width
             height: parent.height
             verticalAlignment: Text.AlignVCenter
             horizontalAlignment: Text.AlignLeft
             leftPadding: font.pixelSize
             rightPadding: leftPadding
             background: Rectangle { border.width: borderWidth; border.color: headerBorderColor }
-            text: contentListView.model.data(contentListView.model.index(contentListView.currentIndex, 0), Qt.UserRole + 6).toFixed(4)
         }
     }
     // Slider

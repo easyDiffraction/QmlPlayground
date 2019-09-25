@@ -378,7 +378,6 @@ class CryspyHandler(QObject):
             # Background
             self._experiments_dict[experiment.label]['background'] = {}
             for ttheta, intensity in zip(experiment.background.ttheta, experiment.background.intensity):
-                print(ttheta, type(ttheta), str(ttheta), type(str(ttheta)))
                 index = str(ttheta)
                 self._experiments_dict[experiment.label]['background'][index] = {}
                 self._experiments_dict[experiment.label]['background'][index]['ttheta'] = ttheta
@@ -389,7 +388,6 @@ class CryspyHandler(QObject):
                     'max': intensity.value * 1.2,
                     'constraint': intensity.constraint,
                     'refine': intensity.refinement }
-            print(self._experiments_dict[experiment.label]['background'])
 
             # Instrument resolution
             self._experiments_dict[experiment.label]['resolution'] = {}
@@ -511,13 +509,8 @@ class CryspyHandler(QObject):
             'calculations': self._calculations_dict,
         }
 
-    def setCryspyObjFromProjectDict(self):
-
-        # Set phases (sample model tab in GUI)
-        # ------------------------------------
-
-        self._phases_dict = self._project_dict['phases']
-
+    def setCryspyObjFromPhases(self):
+        """Set phases (sample model tab in GUI)"""
         for phase in self._cryspy_obj.crystals:
 
             # Unit cell parameters
@@ -582,12 +575,8 @@ class CryspyHandler(QObject):
                     chi_13.refinement = self._phases_dict[phase.label]['atom_site'][label]['chi_13']['refine']
                     chi_23.refinement = self._phases_dict[phase.label]['atom_site'][label]['chi_23']['refine']
 
-        #
-        # Set experiments (Experimental data tab in GUI)
-        # ---------------------------------------------
-
-        self._experiments_dict = self._project_dict['experiments']
-
+    def setCryspyObjFromExperiments(self):
+        """Set experiments (Experimental data tab in GUI)"""
         for experiment in self._cryspy_obj.experiments:
 
             # Main parameters
@@ -611,6 +600,11 @@ class CryspyHandler(QObject):
             experiment.resolution.w.refinement = self._experiments_dict[experiment.label]['resolution']['w']['refine']
             experiment.resolution.x.refinement = self._experiments_dict[experiment.label]['resolution']['x']['refine']
             experiment.resolution.y.refinement = self._experiments_dict[experiment.label]['resolution']['y']['refine']
+
+    def setCryspyObjFromProjectDict(self):
+        """Set all the cryspy parameters from project dictionary"""
+        self.setCryspyObjFromPhases()
+        self.setCryspyObjFromExperiments()
 
     projectDictChanged = Signal()
 
@@ -648,7 +642,7 @@ class CryspyHandler(QObject):
     def refine(self):
         """refinement ..."""
         scipy_refinement_res = self._cryspy_obj.refine()
-        logging.info(scipy_refinement_res)
+        #logging.info(scipy_refinement_res)
         self.setProjectDictFromCryspyObj()
         self.projectDictChanged.emit()
         try:
