@@ -77,6 +77,7 @@ ApplicationWindow {
 
             Custom.ChartView {
 
+
                 LineSeries {
                     name: "Iobs"
 
@@ -87,6 +88,7 @@ ApplicationWindow {
                     }
                 }
 
+
                 LineSeries {
                     name: "Icalc"
 
@@ -96,6 +98,7 @@ ApplicationWindow {
                         yColumn: 1
                     }
                 }
+
             }
 
             // spacer
@@ -117,10 +120,10 @@ ApplicationWindow {
                     model: proxy.fitables
                 }
 
-                //Custom.FitablesView {
-                //    width: (parent.width - parent.spacing) / 2
-                //    model: proxy.fitables
-                //}
+                Custom.FitablesView {
+                    width: (parent.width - parent.spacing) / 2
+                    model: proxy.fitables
+                }
             }
 
             // spacer

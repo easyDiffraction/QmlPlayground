@@ -7,11 +7,11 @@ logging.basicConfig(format="%(asctime)-15s [%(levelname)s] %(filename)s %(funcNa
 class MeasuredDataModel(QObject):
     def __init__(self, project, parent=None):
         super().__init__(parent)
-        logging.info("")
         self._headers_model, self._data_model = self._createModelsFromHeadersAndData(*self._createHeadersAndDataFromProject(project))
 
     def _createHeadersAndDataFromProject(self, project):
         """Create the initial data 2d list with structure for GUI measured data table and chart."""
+        logging.info("start") # profiling
         data = []
         headers = []
         project_dict = project.asDict()
@@ -20,6 +20,7 @@ class MeasuredDataModel(QObject):
                 headers.append(data_id)
                 data.append(data_list)
         data_transposed = [*zip(*data)]
+        logging.info("end") # profiling
         return headers, data_transposed
 
     def _createModelsFromHeadersAndData(self, headers, data):
@@ -34,11 +35,13 @@ class MeasuredDataModel(QObject):
             headers_model.setData(index, value, Qt.DisplayRole) #Qt.WhatsThisRole
         # set model data
         data_model = QStandardItemModel(row_count, column_count)
+        logging.info("setData loop start") # profiling
         for row_index in range(row_count):
             for column_index in range(column_count):
                 index = data_model.index(row_index, column_index)
                 value = data[row_index][column_index]
                 data_model.setData(index, value, Qt.DisplayRole)
+        logging.info("setData loop end") # profiling
         return headers_model, data_model
 
     def asHeadersModel(self):

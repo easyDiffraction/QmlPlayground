@@ -6,7 +6,7 @@ import cryspy
 import logging
 logging.basicConfig(format="%(asctime)-15s [%(levelname)s] %(filename)s %(funcName)s [%(lineno)d]: %(message)s", level=logging.INFO)
 
-from Python.CryspyHandler import *
+from Python.CryspyCalculator import *
 from Python.MeasuredDataModel import *
 from Python.CalculatedDataModel import *
 from Python.FitablesModel import *
@@ -15,17 +15,17 @@ class Proxy(QObject):
     def __init__(self, main_rcif_path, parent=None):
         super().__init__(parent)
         logging.info("")
-        self._project_model = CryspyHandler(main_rcif_path)
-        self._measured_data_model = MeasuredDataModel(self._project_model)
-        self._calculated_data_model = CalculatedDataModel(self._project_model)
+        self._calculator = CryspyCalculator(main_rcif_path)
+        self._measured_data_model = MeasuredDataModel(self._calculator)
+        self._calculated_data_model = CalculatedDataModel(self._calculator)
         self._calculated_data_model.modelChanged.connect(self.projectChanged)
-        self._fitables_model = FitablesModel(self._project_model)
+        self._fitables_model = FitablesModel(self._calculator)
         ##self._fitables_model.modelChanged.connect(self.projectChanged)
 
     # Project model for QML
     projectChanged = Signal()
     def getProject(self):
-        return self._project_model.asDict()
+        return self._calculator.asDict()
     project = Property('QVariant', getProject, notify=projectChanged)
 
     # Measured data header model for QML
@@ -61,5 +61,5 @@ class Proxy(QObject):
     @Slot(result='QVariant')
     def refine(self):
         """refinement ..."""
-        res = self._project_model.refine()
+        res = self._calculator.refine()
         return res

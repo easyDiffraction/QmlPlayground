@@ -9,7 +9,7 @@ import cryspy
 import logging
 logging.basicConfig(format="%(asctime)-15s [%(levelname)s] %(filename)s %(funcName)s [%(lineno)d]: %(message)s", level=logging.INFO)
 
-class CryspyHandler(QObject):
+class CryspyCalculator(QObject):
     def __init__(self, main_rcif_path, parent=None):
         super().__init__(parent)
         logging.info("")
@@ -474,7 +474,9 @@ class CryspyHandler(QObject):
             self._calculations_dict[experiment.label] = {}
 
             # Calculated chi squared and number of data points used for refinement
+            logging.info("calc_chi_sq start") # profiling
             chi_sq, n_res = experiment.calc_chi_sq(self._cryspy_obj.crystals)
+            logging.info("calc_chi_sq end") # profiling
 
             # Main parameters
             self._calculations_dict[experiment.label]['chi_squared'] = {
@@ -489,7 +491,9 @@ class CryspyHandler(QObject):
                 'value': int(n_res) }
 
             # Calculated data
+            logging.info("calc_profile start") # profiling
             calculated_pattern, bragg_peaks, _ = experiment.calc_profile(experiment.meas.ttheta, self._cryspy_obj.crystals)
+            logging.info("calc_profile end") # profiling
 
             # Bragg peaks
             self._calculations_dict[experiment.label]['bragg_peaks'] = {}

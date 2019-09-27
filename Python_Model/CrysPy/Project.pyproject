@@ -6,7 +6,7 @@
     "Python/MeasuredDataModel.py",
     "Python/CalculatedDataModel.py",
     "Python/FitablesModel.py",
-    "Python/CryspyHandler.py",
+    "Python/CryspyCalculator.py",
     "Gui.qml",
     "Qml/TableView.qml",
     "Qml/FitablesView.qml",

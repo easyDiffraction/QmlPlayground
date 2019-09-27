@@ -7,7 +7,6 @@ logging.basicConfig(format="%(asctime)-15s [%(levelname)s] %(filename)s %(funcNa
 class FitablesModel(QObject):
     def __init__(self, project, parent=None):
         super().__init__(parent)
-        logging.info("")
         self._project = project
         self._data = []
         self._model = QStandardItemModel()
@@ -18,6 +17,7 @@ class FitablesModel(QObject):
 
     def _setDataFromProject(self):
         """Create the initial data list with structure for GUI fitables table."""
+        logging.info("start") # profiling
         self._data.clear()
         for level_1_key, level_1_values in self._project.asDict().items():
             for level_2_key, level_2_values in level_1_values.items():
@@ -50,9 +50,11 @@ class FitablesModel(QObject):
                                                     'max': level_5_values['max'],
                                                     'refine': level_5_values['refine']
                                                 })
+        logging.info("end") # profiling
 
     def _setModelFromData(self):
         """Create the model needed for GUI fitables table (based on data dict created previously)."""
+        logging.info("start") # profiling
         ##self._model.clear() # ! Crashes app without clear error message!
         self._model.setRowCount(len(self._data))
         self._model.setColumnCount(1)
@@ -74,15 +76,19 @@ class FitablesModel(QObject):
                 index = self._model.index(row_index, 0)
                 role = start_role + column_index
                 self._model.setData(index, value, role)
+        logging.info("end") # profiling
 
     def _updateProjectByIndexAndRole(self, index, data_role):
         """Update project element, which is changed in the model, depends on its index and role."""
+        logging.info("") # profiling
         data_role_name = self._model.roleNames()[data_role].data().decode()
         row_index = index.row()
         path_role = Qt.UserRole + 1
         value = self._model.data(index, data_role)
         keys = self._model.data(index, path_role) + [data_role_name.replace("Edit", "")]
+        logging.info("start setByPath") # profiling
         self._project.setByPath(keys, value)
+        logging.info("end setByPath") # profiling
 
     modelChanged = Signal()
 
