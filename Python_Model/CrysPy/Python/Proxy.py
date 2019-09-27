@@ -18,9 +18,8 @@ class Proxy(QObject):
         self._calculator = CryspyCalculator(main_rcif_path)
         self._measured_data_model = MeasuredDataModel(self._calculator)
         self._calculated_data_model = CalculatedDataModel(self._calculator)
-        self._calculated_data_model.modelChanged.connect(self.projectChanged)
         self._fitables_model = FitablesModel(self._calculator)
-        ##self._fitables_model.modelChanged.connect(self.projectChanged)
+        self._fitables_model.modelChanged.connect(self.projectChanged)
 
     # Project model for QML
     projectChanged = Signal()

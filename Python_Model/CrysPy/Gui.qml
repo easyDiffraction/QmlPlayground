@@ -90,6 +90,46 @@ ApplicationWindow {
 
 
                 LineSeries {
+                    name: "Iobs"
+
+                    VXYModelMapper{
+                        model: proxy.measuredData
+                        xColumn: 0
+                        yColumn: 1
+                    }
+                }
+
+                LineSeries {
+                    name: "Iobs"
+
+                    VXYModelMapper{
+                        model: proxy.measuredData
+                        xColumn: 0
+                        yColumn: 1
+                    }
+                }
+
+                LineSeries {
+                    name: "Iobs"
+
+                    VXYModelMapper{
+                        model: proxy.measuredData
+                        xColumn: 0
+                        yColumn: 1
+                    }
+                }
+
+                LineSeries {
+                    name: "Iobs"
+
+                    VXYModelMapper{
+                        model: proxy.measuredData
+                        xColumn: 0
+                        yColumn: 1
+                    }
+                }
+
+                LineSeries {
                     name: "Icalc"
 
                     VXYModelMapper{

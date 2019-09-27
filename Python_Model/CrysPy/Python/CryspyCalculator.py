@@ -637,9 +637,10 @@ class CryspyCalculator(QObject):
 
     def setByPath(self, keys, value):
         """Get a value in a nested object in root by key sequence."""
-        self.getByPath(keys[:-1])[keys[-1]] = float(value)
+        self.getByPath(keys[:-1])[keys[-1]] = value
         self.setCryspyObjFromProjectDict() # updates value in cryspy obj (actually all values, which is too expensive...)
-        self.setCalculationsDictFromCryspyObj() # updates back calculated curve
+        if not isinstance(value, bool):
+            self.setCalculationsDictFromCryspyObj() # updates back calculated curve, if something is changed but Fit checkBox
         self.projectDictChanged.emit()
 
     def phasesCount(self):
@@ -665,7 +666,6 @@ class CryspyCalculator(QObject):
     def refine(self):
         """refinement ..."""
         scipy_refinement_res = self._cryspy_obj.refine()
-        #logging.info(scipy_refinement_res)
         self.setProjectDictFromCryspyObj()
         self.projectDictChanged.emit()
         try:

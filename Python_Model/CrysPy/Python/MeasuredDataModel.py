@@ -1,51 +1,34 @@
 from PySide2.QtCore import Qt, QObject, Signal, Slot, Property
-from PySide2.QtGui import QStandardItemModel
-
-import logging
-logging.basicConfig(format="%(asctime)-15s [%(levelname)s] %(filename)s %(funcName)s [%(lineno)d]: %(message)s", level=logging.INFO)
+from PySide2.QtGui import QStandardItem, QStandardItemModel
 
 class MeasuredDataModel(QObject):
-    def __init__(self, project, parent=None):
+    def __init__(self, calculator, parent=None):
         super().__init__(parent)
-        self._headers_model, self._data_model = self._createModelsFromHeadersAndData(*self._createHeadersAndDataFromProject(project))
+        self._project_dict = calculator.asDict()
+        self._headers_model = QStandardItemModel()
+        self._data_model = QStandardItemModel()
+        self._setModelsFromProjectDict()
 
-    def _createHeadersAndDataFromProject(self, project):
-        """Create the initial data 2d list with structure for GUI measured data table and chart."""
-        logging.info("start") # profiling
-        data = []
-        headers = []
-        project_dict = project.asDict()
-        for experiment_id, experiment_dict in project_dict['experiments'].items():
-            for data_id, data_list in experiment_dict['measured'].items():
-                headers.append(data_id)
-                data.append(data_list)
-        data_transposed = [*zip(*data)]
-        logging.info("end") # profiling
-        return headers, data_transposed
-
-    def _createModelsFromHeadersAndData(self, headers, data):
-        """Create the model needed for GUI measured data table and chart (based on data 2d list created previously)."""
-        row_count = len(data)
-        column_count = len(data[0])
-        # set headers
-        headers_model = QStandardItemModel(1, column_count)
-        for column_index in range(column_count):
-            index = headers_model.index(0, column_index)
-            value = headers[column_index]
-            headers_model.setData(index, value, Qt.DisplayRole) #Qt.WhatsThisRole
-        # set model data
-        data_model = QStandardItemModel(row_count, column_count)
-        logging.info("setData loop start") # profiling
-        for row_index in range(row_count):
-            for column_index in range(column_count):
-                index = data_model.index(row_index, column_index)
-                value = data[row_index][column_index]
-                data_model.setData(index, value, Qt.DisplayRole)
-        logging.info("setData loop end") # profiling
-        return headers_model, data_model
+    def _setModelsFromProjectDict(self):
+        """Create the model needed for GUI calculated data table and chart."""
+        self._data_model.setColumnCount(0) # faster than clear()
+        self._headers_model.setRowCount(0) # faster than clear()
+        for experiment_id, experiment_dict in self._project_dict['experiments'].items():
+            headers = []
+            for data_id, data_list in experiment_dict['measured'].items(): # or measured_pattern as calculated_pattern in another class?
+                item = QStandardItem()
+                item.setData(data_id, Qt.DisplayRole)
+                headers.append(item)
+                column = []
+                for value in data_list:
+                    item = QStandardItem()
+                    item.setData(value, Qt.DisplayRole)
+                    column.append(item)
+                self._data_model.appendColumn(column)
+            self._headers_model.appendRow(headers)
 
     def asHeadersModel(self):
-        """Return header model."""
+        """Return headers model."""
         return self._headers_model
 
     def asDataModel(self):

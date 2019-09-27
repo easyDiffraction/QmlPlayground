@@ -171,12 +171,9 @@ Column {
                             horizontalAlignment: Text.AlignRight
                             leftPadding: font.pixelSize
                             rightPadding: leftPadding
-                            text: typeof value === 'number' ? value.toFixed(4) : value
+                            text: value.toFixed(4)
                             color: foregroundColor()
-                            onEditingFinished: {
-                                valueEdit = text
-                                slider.value = text
-                            }
+                            onEditingFinished: valueEdit = parseFloat(text)
                         }
                         Text {
                             width: cellWidthProvider(4)
@@ -262,6 +259,7 @@ Column {
 
             onPressedChanged: {
                 if (!pressed) {
+                    print(value)
                     contentListView.model.setData(contentListView.model.index(contentListView.currentIndex, 0), value, Qt.UserRole + 103)
                 }
             }
