@@ -15,7 +15,9 @@ ApplicationWindow {
   minimumWidth: GuiGenericStyle.Size.appWindowMinimumWidth
   minimumHeight: GuiGenericStyle.Size.appWindowMinimumHeight
 
-  flags: Qt.CustomizeWindowHint | Qt.Window | Qt.WindowCloseButtonHint | Qt.WindowMinMaxButtonsHint
+  //flags: Qt.CustomizeWindowHint | Qt.Window | Qt.WindowCloseButtonHint | Qt.WindowMinMaxButtonsHint
+  //flags: Qt.FramelessWindowHint | Qt.DropShadowWindowHint
+  flags: Qt.FramelessWindowHint
 
   background: Rectangle {
     color: GuiGenericStyle.Color.contentBackgroundColor
