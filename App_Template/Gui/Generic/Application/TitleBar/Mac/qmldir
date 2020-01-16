@@ -1,0 +1,6 @@
+module Mac
+
+TitleBarButton 1.0 TitleBarButton.qml
+CloseTitleBarButton 1.0 CloseTitleBarButton.qml
+MaximizeTitleBarButton 1.0 MaximizeTitleBarButton.qml
+MinimizeTitleBarButton 1.0 MinimizeTitleBarButton.qml

@@ -1,0 +1,5 @@
+module Application
+
+TabButton 1.0 TabButton.qml
+ToolBar 1.0 ToolBar.qml
+Window 1.0 Window.qml

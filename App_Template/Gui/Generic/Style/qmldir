@@ -1,0 +1,4 @@
+module Style
+
+singleton Size 1.0 Size.qml
+singleton Color 1.0 Color.qml
