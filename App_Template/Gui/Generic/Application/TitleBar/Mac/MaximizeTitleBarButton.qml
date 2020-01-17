@@ -1,4 +1,5 @@
 import QtQuick 2.13
+import QtQuick.Window 2.13
 import QtQuick.Controls 2.13
 import QtQuick.Controls.impl 2.13
 import QtQuick.Shapes 1.13
@@ -25,12 +26,13 @@ GuiGenericApplicationTitleBarMac.TitleBarButton {
     }
   ]
 
-  borderColor: "#53a73f"
+  borderColor: "#5abd4a" //"#56a743"
   fillColor: "#65ca57"
   iconColor: "#2a6118"
 
   onClicked: {
-    if (appWindow.visibility !== 4 && appWindow.visibility !== 5) {
+    if (appWindow.visibility !== Window.Maximized
+        && appWindow.visibility !== Window.FullScreen) {
       appWindow.showFullScreen() //appWindow.showMaximized()
     } else {
       appWindow.showNormal()

@@ -17,37 +17,34 @@ ApplicationWindow {
 
   //flags: Qt.CustomizeWindowHint | Qt.Window | Qt.WindowCloseButtonHint | Qt.WindowMinMaxButtonsHint
   //flags: Qt.FramelessWindowHint | Qt.DropShadowWindowHint
-  flags: Qt.FramelessWindowHint
+  flags: Qt.CustomizeWindowHint | Qt.WindowCloseButtonHint | Qt.WindowMinMaxButtonsHint
 
   background: Rectangle {
     color: GuiGenericStyle.Color.contentBackgroundColor
   }
 
   Column {
-    width: appWindow.width
-    height: appWindow.height
+    width: parent.width
+    height: parent.height
 
     GuiGenericApplication.ToolBar {
       id: toolBar
-      appWindow: appWindow
-      width: appWindow.width
+      width: parent.width
       height: GuiGenericStyle.Size.tabBarHeight
+      appWindow: appWindow
     }
 
     Rectangle {
-      width: appWindow.width
+      id: separator
+      width: parent.width
       height: GuiGenericStyle.Size.borderThickness
       color: GuiGenericStyle.Color.tabBarBorderColor
     }
 
-    Text {
-      text: "afwef"
-    }
-
     SwipeView {
-      width: appWindow.width
-      height: appWindow.height - GuiGenericStyle.Size.tabBarHeight
-              - GuiGenericStyle.Size.borderThickness
+      id: contentArea
+      width: parent.width
+      height: parent.height - toolBar.height - separator.height
     }
   }
 }

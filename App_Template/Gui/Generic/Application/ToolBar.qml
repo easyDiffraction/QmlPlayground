@@ -47,26 +47,30 @@ ToolBar {
     }
   }
 
-  // System Buttons
+  // Title Bar Buttons
   Item {
-    width: 13 * 3 + 8 * 2
-    height: 13
     anchors.verticalCenter: parent.verticalCenter
     anchors.left: parent.left
     anchors.leftMargin: 10
+    width: childrenRect.width
+    height: childrenRect.height
 
     Row {
       spacing: 8
 
       GuiGenericApplicationTitleBarMac.CloseTitleBarButton {
+        anchors.verticalCenter: parent.verticalCenter
         showIcon: systemButtonsArea.containsMouse
       }
 
       GuiGenericApplicationTitleBarMac.MinimizeTitleBarButton {
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.verticalCenterOffset: -0.5
         showIcon: systemButtonsArea.containsMouse
       }
 
       GuiGenericApplicationTitleBarMac.MaximizeTitleBarButton {
+        anchors.verticalCenter: parent.verticalCenter
         showIcon: systemButtonsArea.containsMouse
       }
     }

@@ -25,9 +25,9 @@ GuiGenericApplicationTitleBarMac.TitleBarButton {
     }
   ]
 
-  borderColor: "#d65145"
+  borderColor: "#e45a4d"//"#d14d41"
   fillColor: "#ed6b5f"
-  iconColor: "#4d0000"
+  iconColor: "#460804"
 
   onClicked: Qt.quit()
 }

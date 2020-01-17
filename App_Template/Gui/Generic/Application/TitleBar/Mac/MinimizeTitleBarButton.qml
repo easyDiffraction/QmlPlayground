@@ -8,18 +8,20 @@ import Gui.Generic.Application.TitleBar.Mac 1.0 as GuiGenericApplicationTitleBar
 GuiGenericApplicationTitleBarMac.TitleBarButton {
   iconElements: [
     PathMove {
-      x: 3
+      x: 3.5
       y: 7
     },
     PathLine {
-      x: 10
+      x: 10.5
       y: 7
     }
   ]
 
-  borderColor: "#d9a13f"
-  fillColor: "#f6c050"
-  iconColor: "#915a1d"
+  buttonSize: 14 // slightly increase, as yellow button looks a bit smaller than others
+
+  borderColor: "#eab043" //"#d6a145"
+  fillColor: "#f6be4f"
+  iconColor: "#90591d"
 
   onClicked: appWindow.showMinimized()
 }

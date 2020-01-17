@@ -6,7 +6,7 @@ import QtQuick.Shapes 1.13
 Button {
   property bool showIcon: false
   property int buttonSize: 13
-  property int borderWidth: 1
+  property real borderWidth: 1
   property string borderColor: "grey"
   property string fillColor: "lightgrey"
   property string iconColor: "grey"
@@ -16,14 +16,17 @@ Button {
   height: buttonSize
 
   background: Rectangle {
-    radius: buttonSize
+    radius: buttonSize * 0.5
     border.width: borderWidth
     border.color: borderColor
     color: fillColor
   }
 
   Shape {
-    anchors.fill: parent
+    //anchors.centerIn: parent
+    width: buttonSize
+    height: height
+
     visible: showIcon
 
     ShapePath {
