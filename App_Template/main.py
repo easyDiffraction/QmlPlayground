@@ -1,7 +1,7 @@
 import os
 import sys
 import random
-from PySide2.QtCore import QUrl, QObject, Slot
+from PySide2.QtCore import Qt, QUrl, QObject, Slot
 from PySide2.QtQml import QQmlApplicationEngine
 from PySide2.QtWidgets import QApplication
 
