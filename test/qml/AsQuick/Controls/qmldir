@@ -1,0 +1,5 @@
+module Controls
+
+ApplicationWindow 1.0 ApplicationWindow.qml
+ToolBar 1.0 ToolBar.qml
+ToolTip 1.0 ToolTip.qml
