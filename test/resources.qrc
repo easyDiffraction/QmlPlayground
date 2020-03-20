@@ -1,22 +1,22 @@
 <RCC>
     <qresource prefix="/">
-        <file>qml/main.qml</file>
-        <file>qml/AsQuick/Animations/qmldir</file>
-        <file>qml/AsQuick/Animations/ThemeChange.qml</file>
-        <file>qml/AsQuick/Animations/TranslationChange.qml</file>
-        <file>qml/AsQuick/Controls/ApplicationWindow.qml</file>
-        <file>qml/AsQuick/Controls/qmldir</file>
-        <file>qml/AsQuick/Controls/ToolBar.qml</file>
-        <file>qml/AsQuick/Controls/ToolTip.qml</file>
-        <file>qml/AsQuick/Globals/Color.qml</file>
-        <file>qml/AsQuick/Globals/Font.qml</file>
-        <file>qml/AsQuick/Globals/qmldir</file>
-        <file>qml/AsQuick/Globals/Size.qml</file>
-        <file>qml/AsQuick/Globals/Variable.qml</file>
-        <file>qml/AsQuick/Resources/Font/OFL.txt</file>
-        <file>qml/AsQuick/Resources/Font/PT_Sans-Web-Bold.ttf</file>
-        <file>qml/AsQuick/Resources/Font/PT_Sans-Web-Regular.ttf</file>
-        <file>qml/AsQuick/Resources/Icon/App.png</file>
-        <file>qml/AsQuick/Resources/Icon/App.svg</file>
+        <file>gui/main.qml</file>
+        <file>gui/AsQuick/Animations/qmldir</file>
+        <file>gui/AsQuick/Animations/ThemeChange.qml</file>
+        <file>gui/AsQuick/Animations/TranslationChange.qml</file>
+        <file>gui/AsQuick/Controls/ApplicationWindow.qml</file>
+        <file>gui/AsQuick/Controls/qmldir</file>
+        <file>gui/AsQuick/Controls/ToolBar.qml</file>
+        <file>gui/AsQuick/Controls/ToolTip.qml</file>
+        <file>gui/AsQuick/Globals/Color.qml</file>
+        <file>gui/AsQuick/Globals/Font.qml</file>
+        <file>gui/AsQuick/Globals/qmldir</file>
+        <file>gui/AsQuick/Globals/Size.qml</file>
+        <file>gui/AsQuick/Globals/Variable.qml</file>
+        <file>gui/AsQuick/Resources/Font/OFL.txt</file>
+        <file>gui/AsQuick/Resources/Font/PT_Sans-Web-Bold.ttf</file>
+        <file>gui/AsQuick/Resources/Font/PT_Sans-Web-Regular.ttf</file>
+        <file>gui/AsQuick/Resources/Icon/App.png</file>
+        <file>gui/AsQuick/Resources/Icon/App.svg</file>
     </qresource>
 </RCC>

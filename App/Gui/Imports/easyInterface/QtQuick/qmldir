@@ -1,0 +1,6 @@
+module QtQuick
+
+ApplicationWindow 1.0 ApplicationWindow.qml
+Dialog 1.0 Dialog.qml
+ScrollBar 1.0 ScrollBar.qml
+ToolBar 1.0 ToolBar.qml

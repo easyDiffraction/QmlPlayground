@@ -1,7 +1,7 @@
 import QtQuick 2.13
 import QtQuick.Controls 2.13
 import QtQuick.Controls.Material 2.13
-//import QtCharts 2.3
+import QtCharts 2.3
 
 import AsQuick.Globals 1.0 as Globals
 import AsQuick.Controls 1.0
@@ -9,13 +9,12 @@ import AsQuick.Controls 1.0
 ApplicationWindow {
 
 
-    /*
     ChartView {
         id: chart
         title: "Top-5 car brand shares in Finland"
         anchors.fill: parent
         legend.alignment: Qt.AlignBottom
-        //antialiasing: true
+        antialiasing: true
 
         PieSeries {
             id: pieSeries
@@ -25,9 +24,7 @@ ApplicationWindow {
             PieSlice { label: "Skoda"; value: 8.2 }
             PieSlice { label: "Volvo"; value: 6.8 }
         }
-    }*/
-
-
+    }
 
     header: ToolBar {
 
