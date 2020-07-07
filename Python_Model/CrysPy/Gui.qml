@@ -74,50 +74,9 @@ ApplicationWindow {
             // measuredData (ChartView)
 
             Text { text: "measuredData (ChartView)"; color: "red" }
+            Text { text: mapper.model.data(mapper.model.index(0, 0)) }
 
             Custom.ChartView {
-
-
-                LineSeries {
-                    name: "Iobs"
-
-                    VXYModelMapper{
-                        model: proxy.measuredData
-                        xColumn: 0
-                        yColumn: 1
-                    }
-                }
-
-
-                LineSeries {
-                    name: "Iobs"
-
-                    VXYModelMapper{
-                        model: proxy.measuredData
-                        xColumn: 0
-                        yColumn: 1
-                    }
-                }
-
-                LineSeries {
-                    name: "Iobs"
-
-                    VXYModelMapper{
-                        model: proxy.measuredData
-                        xColumn: 0
-                        yColumn: 1
-                    }
-                }
-
-                LineSeries {
-                    name: "Iobs"
-
-                    VXYModelMapper{
-                        model: proxy.measuredData
-                        xColumn: 0
-                        yColumn: 1
-                    }
-                }
 
                 LineSeries {
                     name: "Iobs"
@@ -133,6 +92,7 @@ ApplicationWindow {
                     name: "Icalc"
 
                     VXYModelMapper{
+                        id: mapper
                         model: proxy.calculatedData
                         xColumn: 0
                         yColumn: 1

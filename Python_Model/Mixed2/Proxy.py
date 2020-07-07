@@ -17,6 +17,26 @@ from TableModel import *
 # https://bugreports.qt.io/browse/PYSIDE-900
 # ! https://pyblish.gitbooks.io/developer-guide/content/qml_and_python_interoperability.html
 
+class PyListOfInt2d(QObject):
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._data = [
+            [11, 12, 13],
+            [14, 15, 16],
+            [17, 18, 19],
+        ]
+
+        def rowCount(self, parent=QModelIndex()):
+            return len(self._data)
+
+        def columnCount(self, parent=QModelIndex()):
+            return len(self._data[0])
+
+        def data(self, index):
+            return '{:.4f}'.format(self._data[index.row()][index.column()])
+
+
 class Proxy(QObject):
 
     def __init__(self, parent=None):
@@ -30,6 +50,7 @@ class Proxy(QObject):
             [14, 15, 16],
             [17, 18, 19],
         ]
+        self._pyListOfInt2d = PyListOfInt2d()
 
         self._pyDict = { "a":1, "b":2, "c": {"x":3, "y":4}, "d": [5, 6, 7] }
         self._qAbstractList = ListModel()
@@ -48,6 +69,17 @@ class Proxy(QObject):
         self._pyString = value
         self.pyStringChanged.emit()
     pyString = Property(str, fget=getPyString, fset=setPyString, notify=pyStringChanged)
+
+    # self._pyListOfInt
+    pyListOfIntChanged = Signal()
+    def getPyListOfInt(self):
+        return self._pyListOfInt
+    def setPyListOfInt(self, data):
+        value = float(data.toVariant()[0])
+        row = data.toVariant()[1]
+        self._pyListOfInt[row] = value
+        self.pyListOfIntChanged.emit()
+    pyListOfInt = Property('QVariant', getPyListOfInt, setPyListOfInt, notify=pyListOfIntChanged)
 
     # self._pyDict
     pyDictChanged = Signal()
@@ -70,14 +102,6 @@ class Proxy(QObject):
         return self._qAbstractList
     qAbstractList = Property('QVariant', getQAbstractList, notify=qAbstractListChanged)
 
-    # self._pyListOfInt
-    pyListOfIntChanged = Signal()
-    def getPyListOfInt(self):
-        return self._pyListOfInt
-    def setPyListOfInt(self, value):
-        self._pyListOfInt = value
-        self.pyListOfIntChanged.emit()
-    pyListOfInt = Property('QVariant', getPyListOfInt, setPyListOfInt, notify=pyListOfIntChanged)
 
     # self._pyListOfInt2d
     pyListOfInt2dChanged = Signal()

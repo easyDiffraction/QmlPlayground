@@ -1,0 +1,3 @@
+module App
+
+StatusBar 1.0 StatusBar.qml

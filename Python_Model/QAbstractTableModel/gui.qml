@@ -36,32 +36,32 @@ ApplicationWindow {
             border.color: headerBorderColor
 
             ChartView {
+                id: chartView
                 width: parent.width
                 height: parent.height
                 anchors.margins: -12
                 antialiasing: true
-                //legend.visible: false
                 legend.visible: true
                 legend.alignment: Qt.AlignBottom
                 //animationOptions: ChartView.AllAnimations
 
                 LineSeries {
-                    name: mapper1.model.headerData(mapper1.yColumn, Qt.Horizontal)
+                    name: mapper1.model.header(mapper1.yColumn)
                     //useOpenGL: true
                     VXYModelMapper{
                         id: mapper1
-                        model: experimentalDataModel
+                        model: pythonModel.experimentalData //experimentalDataModel
                         xColumn: 0
                         yColumn: 1
                     }
                 }
 
                 ScatterSeries {
-                    name: experimentalDataModel.headerData(mapper2.yColumn, Qt.Horizontal)
+                    name: mapper2.model.header(mapper2.yColumn)
                     //useOpenGL: true
                     VXYModelMapper{
                         id: mapper2
-                        model: experimentalDataModel
+                        model: pythonModel.experimentalData //experimentalDataModel
                         xColumn: 0
                         yColumn: 2
                     }
@@ -74,26 +74,40 @@ ApplicationWindow {
         //////////////////////////////////////////
         // Simulated data table
         Rectangle {
-            width: childrenRect.width + borderWidth * 2
-            height: childrenRect.height + borderWidth * 2
+            width: parent.width
+            height: cellHeight * 4 + borderWidth * 2
             border.width: borderWidth
             border.color: headerBorderColor
 
-            // Horizontal Header
-            Rectangle {
-                id: columnsHeader
-                x: borderWidth
-                y: borderWidth
-                width: simulatedDataTable.width
-                height: cellHeight
-                color: headerBackgroundColor
+            ListView {
+                id: listView
+                anchors.fill: parent
+                anchors.margins: borderWidth
+                clip: true
+                boundsBehavior: Flickable.StopAtBounds
 
-                Row {
-                    anchors.fill: parent
+                model: pythonModel.fitables
 
-                    Repeater {
-                        anchors.fill: parent
-                        model: simulatedDataTable.columns
+                // Table header
+                header: Rectangle {
+                    width: parent.width
+                    height: cellHeight
+                    color: headerBackgroundColor
+
+                    Row {
+                        width: parent.width
+                        height: parent.height
+                        spacing: 10
+
+                        Text {
+                            width: cellWidth
+                            height: cellHeight
+                            leftPadding: font.pixelSize
+                            rightPadding: leftPadding
+                            horizontalAlignment: Text.AlignRight
+                            verticalAlignment: Text.AlignVCenter
+                            text: "Name"
+                        }
 
                         TextInput {
                             width: cellWidth
@@ -102,11 +116,141 @@ ApplicationWindow {
                             rightPadding: leftPadding
                             horizontalAlignment: Text.AlignRight
                             verticalAlignment: Text.AlignVCenter
-                            color: headerTextColor
-                            //text: simulatedDataTable2.model.headerData(modelData, Qt.Horizontal)
-                            text: experimentalDataModel.headerData(modelData, Qt.Horizontal)
-                            onEditingFinished: experimentalDataModel.setHeaderData(modelData, Qt.Horizontal, text, Qt.EditRole)
+                            text: "Value"
                         }
+
+                        TextInput {
+                            width: cellHeight
+                            height: cellHeight
+                            leftPadding: font.pixelSize
+                            rightPadding: leftPadding
+                            horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
+                            text: "Fit"
+                        }
+                    }
+                }
+                // Table header
+
+                // Table row
+                delegate: Rectangle {
+                    width: parent.width
+                    height: cellHeight
+                    color: index % 2 ? alternateRowBackgroundColor : rowBackgroundColor
+
+                    Row {
+
+                        width: parent.width
+                        height: parent.height
+                        spacing: 10
+
+                        TextInput {
+                            width: cellWidth
+                            height: cellHeight
+                            leftPadding: font.pixelSize
+                            rightPadding: leftPadding
+                            horizontalAlignment: Text.AlignRight
+                            verticalAlignment: Text.AlignVCenter
+                            text: nameRole
+                            onEditingFinished: nameRole = text
+                        }
+
+                        TextInput {
+                            width: cellWidth
+                            height: cellHeight
+                            leftPadding: font.pixelSize
+                            rightPadding: leftPadding
+                            horizontalAlignment: Text.AlignRight
+                            verticalAlignment: Text.AlignVCenter
+                            validator : RegExpValidator { regExp : /[0-9]*\.[0-9]+/ }
+                            text: valueRole
+                            onEditingFinished: valueRole = text
+                        }
+
+                        CheckBox {
+                            width: cellHeight
+                            height: cellHeight
+                            checked: refineRole
+                            onToggled: refineRole = checked
+                        }
+                    }
+                }
+                // Table row
+            }
+        }
+        // Simulated data table
+        //////////////////////////////////////////
+
+
+        /*
+        //////////////////////////////////////////
+        Rectangle {
+            width: childrenRect.width + borderWidth * 2
+            height: childrenRect.height + borderWidth * 2
+            border.width: borderWidth
+            border.color: headerBorderColor
+
+            // Columns header
+            TableView {
+                //id: columnsHeader
+                x: borderWidth
+                y: borderWidth
+                width: simulatedDataTable.width
+                height: cellHeight
+
+                model: pythonModel.experimentalData //experimentalDataModel
+
+                delegate: Rectangle {
+                    implicitWidth: cellWidth
+                    implicitHeight: cellHeight
+                    color: headerBackgroundColor
+
+                    TextInput {
+                        anchors.fill: parent
+                        leftPadding: font.pixelSize
+                        rightPadding: leftPadding
+                        horizontalAlignment: Text.AlignRight
+                        verticalAlignment: Text.AlignVCenter
+                        text: headerRole
+                        onEditingFinished: headerRole = text
+                    }
+                }
+            }
+        }
+        //////////////////////////////////////////
+        */
+
+        //////////////////////////////////////////
+        // Simulated data table
+        Rectangle {
+            width: childrenRect.width + borderWidth * 2
+            height: childrenRect.height + borderWidth * 2
+            border.width: borderWidth
+            border.color: headerBorderColor
+
+            // Columns header
+            TableView {
+                id: columnsHeader
+                x: borderWidth
+                y: borderWidth
+                width: simulatedDataTable.width
+                height: cellHeight
+
+                model: pythonModel.experimentalData //experimentalDataModel
+
+                delegate: Rectangle {
+                    implicitWidth: cellWidth
+                    implicitHeight: cellHeight
+                    color: headerBackgroundColor
+
+                    TextInput {
+                        anchors.fill: parent
+                        leftPadding: font.pixelSize
+                        rightPadding: leftPadding
+                        horizontalAlignment: Text.AlignRight
+                        verticalAlignment: Text.AlignVCenter
+                        text: headerRole
+                        onEditingFinished: headerRole = text
                     }
                 }
             }
@@ -121,13 +265,12 @@ ApplicationWindow {
                 clip: true
                 boundsBehavior: Flickable.StopAtBounds
 
-                model: experimentalDataModel
+                model: pythonModel.experimentalData //experimentalDataModel
 
                 delegate: Rectangle {
                     implicitWidth: cellWidth
                     implicitHeight: cellHeight
                     color: row % 2 ? alternateRowBackgroundColor : rowBackgroundColor
-                    //color: column === 0 ? headerBackgroundColor : rowBackgroundColor
 
                     TextInput {
                         anchors.fill: parent
@@ -136,8 +279,8 @@ ApplicationWindow {
                         horizontalAlignment: Text.AlignRight
                         verticalAlignment: Text.AlignVCenter
                         validator : RegExpValidator { regExp : /[0-9]*\.[0-9]+/ }
-                        text: display
-                        onEditingFinished: edit = text
+                        text: dataRole
+                        onEditingFinished: dataRole = text
                     }
                 }
 
@@ -148,6 +291,7 @@ ApplicationWindow {
         // Simulated data table
         //////////////////////////////////////////
 
+        /*
         //////////////////////////////////////////
         // Simulated data table
         Rectangle {
@@ -156,49 +300,16 @@ ApplicationWindow {
             border.width: borderWidth
             border.color: headerBorderColor
 
-            // Horizontal Header
-            Rectangle {
-                id: columnsHeader2
-                x: borderWidth
-                y: borderWidth
-                width: simulatedDataTable2.width
-                height: cellHeight
-                color: headerBackgroundColor
-
-                Row {
-                    anchors.fill: parent
-
-                    Repeater {
-                        anchors.fill: parent
-                        model: simulatedDataTable2.columns
-
-                        TextEdit {
-                            width: cellWidth
-                            height: cellHeight
-                            leftPadding: font.pixelSize
-                            rightPadding: leftPadding
-                            horizontalAlignment: Text.AlignRight
-                            verticalAlignment: Text.AlignVCenter
-                            color: headerTextColor
-                            //text: simulatedDataTable2.model.headerData(modelData, Qt.Horizontal)
-                            text: experimentalDataModel.headerData(modelData, Qt.Horizontal)
-                            onEditingFinished: experimentalDataModel.setHeaderData(modelData, Qt.Horizontal, text, Qt.EditRole)
-                        }
-                    }
-                }
-            }
-
             // Table cells
             TableView {
-                id: simulatedDataTable2
-                x: columnsHeader2.x
-                anchors.top: columnsHeader2.bottom
+                x: borderWidth
+                y: borderWidth
                 width: cellWidth * columns
                 height: cellHeight * 5
                 clip: true
                 boundsBehavior: Flickable.StopAtBounds
 
-                model: experimentalDataModel
+                model: pythonModel.experimentalData //experimentalDataModel
 
                 delegate: Rectangle {
                     implicitWidth: cellWidth
@@ -212,8 +323,8 @@ ApplicationWindow {
                         horizontalAlignment: Text.AlignRight
                         verticalAlignment: Text.AlignVCenter
                         validator : RegExpValidator { regExp : /[0-9]*\.[0-9]+/ }
-                        text: display
-                        onEditingFinished: edit = text
+                        text: dataRole
+                        onEditingFinished: dataRole = text
                     }
                 }
 
@@ -223,13 +334,17 @@ ApplicationWindow {
         }
         // Simulated data table
         //////////////////////////////////////////
+        */
 
         //////////////////////////////////////////
         // Button
         Button {
             Layout.fillWidth: true
             text: 'Set data randomly' //+ experimentalDataModel.headerData(0, Qt.Horizontal)
-            onClicked: experimentalDataModel.setModelRandomly()
+            onClicked: {
+                //experimentalDataModel.setModelRandomly()
+                pythonModel.refine()
+            }
         }
         // Button
         //////////////////////////////////////////

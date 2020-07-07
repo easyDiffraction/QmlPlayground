@@ -20,5 +20,6 @@ Window {
             text: "Click me"
             onClicked: label.text = helloMessage.randomHello()
         }
+
     }
 }

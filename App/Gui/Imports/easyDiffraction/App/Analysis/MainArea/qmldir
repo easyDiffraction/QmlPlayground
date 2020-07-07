@@ -1,0 +1,4 @@
+module MainArea
+
+PlotView 1.0 PlotView.qml
+TextView 1.0 TextView.qml

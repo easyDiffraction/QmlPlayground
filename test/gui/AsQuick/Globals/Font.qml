@@ -6,10 +6,10 @@ QtObject {
 
     // Load fonts
     property FontLoader ptSansWebRegular: FontLoader {
-        source: "qrc:/qml/AsQuick/Resources/Font/PT_Sans-Web-Regular.ttf"
+        source: "qrc:/gui/AsQuick/Resources/Font/PT_Sans-Web-Regular.ttf"
     }
     property FontLoader ptSansWebBold: FontLoader {
-        source: "qrc:/qml/AsQuick/Resources/Font/PT_Sans-Web-Bold.ttf"
+        source: "qrc:/gui/AsQuick/Resources/Font/PT_Sans-Web-Bold.ttf"
     }
 
     // Default font parameters

@@ -6,6 +6,8 @@ QtObject {
   // Application Window
   readonly property int appWindowMinimumWidth: 500
   readonly property int appWindowMinimumHeight: 400
+  readonly property int appWindowRadius: 10
+  readonly property int appWindowShadowRadius: 20
 
   // Tab bar
   readonly property int tabBarHeight: 50

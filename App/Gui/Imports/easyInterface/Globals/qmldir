@@ -1,0 +1,8 @@
+module Globals
+
+singleton Color 1.0 Color.qml
+singleton Font 1.0 Font.qml
+singleton Icon 1.0 Icon.qml
+singleton Size 1.0 Size.qml
+singleton Translator 1.0 Translator.qml
+singleton Variable 1.0 Variable.qml

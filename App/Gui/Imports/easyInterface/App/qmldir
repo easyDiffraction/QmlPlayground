@@ -1,0 +1,27 @@
+module Appl
+
+ApplicationBar 1.0 ApplicationBar.qml
+ApplicationBarTabs 1.0 ApplicationBarTabs.qml
+ApplicationWindow 1.0 ApplicationWindow.qml
+
+MainAreaContainer 1.0 MainAreaContainer.qml
+MainAreaContent 1.0 MainAreaContent.qml
+MainAreaTabs 1.0 MainAreaTabs.qml
+
+GroupBox 1.0 GroupBox.qml
+GroupButton 1.0 GroupButton.qml
+GroupColumn 1.0 GroupColumn.qml
+GroupRow 1.0 GroupRow.qml
+
+Page 1.0 Page.qml
+PagesView 1.0 PagesView.qml
+PlotAxis 1.0 PlotAxis.qml
+PlotView 1.0 PlotView.qml
+SideBar 1.0 SideBar.qml
+StatusBar 1.0 StatusBar.qml
+StructureView 1.0 StructureView.qml
+TabBar 1.0 TabBar.qml
+TabButton 1.0 TabButton.qml
+TextArea 1.0 TextArea.qml
+TextView 1.0 TextView.qml
+ToolButton 1.0 ToolButton.qml

@@ -152,6 +152,11 @@ ApplicationWindow {
 
             Button {
                 Layout.fillWidth: true
+                text: ": " + listView.model.data(2, Qt.UserRole + 2)
+            }
+
+            Button {
+                Layout.fillWidth: true
                 text: "Change atom site No. 2"
                 onClicked: atomSiteModel.modifyAtomSiteNo2()
             }

@@ -17,7 +17,7 @@ Window {
         Label { id: label; text: "Initial label text" }
 
         Button {
-            text: "Click me"
+            text: "Click me222"
             onClicked: label.text = helloMessage.randomHello()
         }
     }

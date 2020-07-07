@@ -11,6 +11,7 @@ ToolBar {
   property alias buttons: buttonsContainer.children
 
   background: Rectangle {
+    //radius: GuiGenericStyle.Size.appWindowRadius
     color: GuiGenericStyle.Color.tabBarBackgroundColor
   }
 

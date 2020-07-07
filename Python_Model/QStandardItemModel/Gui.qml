@@ -32,7 +32,7 @@ ApplicationWindow {
 
             ScrollView {
                 width: parent.width
-                height: 150
+                height: 125
 
                 TextArea {
                     wrapMode: Text.Wrap
@@ -41,10 +41,6 @@ ApplicationWindow {
                 }
 
             }
-
-            // spacer
-
-            Item { height: 15; width: 1 }
 
             // measuredData and calculated (TableView)
 
@@ -66,10 +62,6 @@ ApplicationWindow {
                     dataModel: proxy.calculatedData
                 }
             }
-
-            // spacer
-
-            Item { height: 15; width: 1 }
 
             // measuredData (ChartView)
 
@@ -98,10 +90,6 @@ ApplicationWindow {
                 }
             }
 
-            // spacer
-
-            Item { height: 15; width: 1 }
-
             // fitables (ListView)
 
             Text { text: "fitables (ListView)"; color: "red" }
@@ -121,10 +109,6 @@ ApplicationWindow {
                     model: proxy.fitables
                 }
             }
-
-            // spacer
-
-            Item { height: 15; width: 1 }
 
             // selector (ListView)
 
@@ -163,11 +147,9 @@ ApplicationWindow {
                 }
             }
 
-            // spacer
-
-            Item { height: 15; width: 1 }
-
             // Button
+
+            Text { text: "button (Button)"; color: "red" }
 
             Button {
                 text: 'Random change of calculated data'

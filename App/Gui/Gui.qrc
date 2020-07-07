@@ -1,0 +1,25 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Imports/easyInterface/Custom/Animations/qmldir</file>
+        <file>Imports/easyInterface/Custom/Animations/ThemeChange.qml</file>
+        <file>Imports/easyInterface/Custom/Controls/ApplicationBar.qml</file>
+        <file>Imports/easyInterface/Custom/Controls/qmldir</file>
+        <file>Imports/easyInterface/Custom/Style/Color.qml</file>
+        <file>Imports/easyInterface/Custom/Style/Font.qml</file>
+        <file>Imports/easyInterface/Custom/Style/qmldir</file>
+        <file>Imports/easyInterface/Custom/Style/Size.qml</file>
+        <file>Imports/easyInterface/Custom/Style/Theme.qml</file>
+        <file>Imports/easyInterface/Custom/qmldir</file>
+        <file>Imports/easyInterface/QtQuick/Controls/ApplicationWindow.qml</file>
+        <file>Imports/easyInterface/QtQuick/Controls/Button.qml</file>
+        <file>Imports/easyInterface/QtQuick/Controls/qmldir</file>
+        <file>Imports/easyInterface/QtQuick/Controls/TabBar.qml</file>
+        <file>Imports/easyInterface/QtQuick/Controls/TabButton.qml</file>
+        <file>Imports/easyInterface/QtQuick/qmldir</file>
+        <file>Imports/easyInterface/qmldir</file>
+        <file>Translations/main_en.qm</file>
+        <file>Translations/main_en.ts</file>
+        <file>Translations/main_ru.qm</file>
+        <file>Translations/main_ru.ts</file>
+    </qresource>
+</RCC>

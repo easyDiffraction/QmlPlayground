@@ -130,7 +130,6 @@ Rectangle {
                 function foregroundColor() {
                     return index === contentListView.currentIndex ? highlightedRowForegroundColor : rowForegroundColor
                 }
-
                 function backgroundColor() {
                     if (index === contentListView.currentIndex)
                         return highlightedRowBackgroundColor
@@ -148,7 +147,7 @@ Rectangle {
                         horizontalAlignment: Text.AlignRight
                         leftPadding: font.pixelSize
                         rightPadding: leftPadding
-                        text: index + 1
+                        text: model.index + 1
                         color: foregroundColor()
                     }
                     Text {
@@ -158,7 +157,7 @@ Rectangle {
                         horizontalAlignment: Text.AlignLeft
                         leftPadding: font.pixelSize
                         rightPadding: leftPadding
-                        text: label
+                        text: model.label
                         color: foregroundColor()
                     }
                     TextInput {
@@ -168,9 +167,9 @@ Rectangle {
                         horizontalAlignment: Text.AlignRight
                         leftPadding: font.pixelSize
                         rightPadding: leftPadding
-                        text: value
+                        text: model.value
                         color: foregroundColor()
-                        onEditingFinished: value = text
+                        onEditingFinished: model.value = text
                     }
                     Text {
                         width: cellWidthProvider(4)
@@ -179,14 +178,14 @@ Rectangle {
                         horizontalAlignment: Text.AlignRight
                         leftPadding: font.pixelSize
                         rightPadding: leftPadding
-                        text: error
+                        text: model.error
                         color: foregroundColor()
                     }
                     CheckBox {
                         width: cellWidthProvider(5)
                         height: parent.height
-                        checked: refine
-                        onToggled: refine = checked
+                        checked: model.refine
+                        onToggled: model.refine = checked
                     }
                 }
 

@@ -1,0 +1,4 @@
+module Sample
+
+MainArea 1.0 MainArea.qml
+SideBar 1.0 SideBar.qml

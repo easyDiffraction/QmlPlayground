@@ -1,0 +1,8 @@
+{
+  "title": "SingleQml",
+  "identifier": "com.yourcompany.wizardEVAP.SingleQml",
+  "orientation": "landscape",
+  "versioncode": 1,
+  "versionname": "1.0",
+  "stage": "test"
+}

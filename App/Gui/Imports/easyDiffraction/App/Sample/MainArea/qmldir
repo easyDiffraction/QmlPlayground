@@ -1,0 +1,4 @@
+module MainArea
+
+StructureView 1.0 StructureView.qml
+TextView 1.0 TextView.qml

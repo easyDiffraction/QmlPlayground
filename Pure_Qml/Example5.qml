@@ -8,16 +8,24 @@ Window {
     height: 300
     color: "#fafafa"
 
-    Label {
-        id: label
-        anchors.centerIn: parent
-        font.pixelSize: 22
-        font.bold: true
-        text: "Hello, World "
+    Column {
+        id: column
+        x: 131
+        y: 18
+        width: 200
+        height: 400
+
+        Label {
+            id: label
+            anchors.centerIn: parent
+            font.pixelSize: 22
+            font.bold: true
+            text: "Hello, World -- "
+            opacity: 1
+        }
     }
 
     Component.onCompleted: {
         label.text += Math.random()
     }
 }
-

@@ -24,6 +24,7 @@ class Proxy(QObject):
     # Project model for QML
     projectChanged = Signal()
     def getProject(self):
+        logging.info("")
         return self._calculator.asDict()
     project = Property('QVariant', getProject, notify=projectChanged)
 
@@ -36,6 +37,7 @@ class Proxy(QObject):
     # Measured data model for QML
     measuredDataChanged = Signal()
     def getMeasuredData(self):
+        logging.info("")
         return self._measured_data_model.asDataModel()
     measuredData = Property('QVariant', getMeasuredData, notify=measuredDataChanged)
 
@@ -48,12 +50,14 @@ class Proxy(QObject):
     # Calculated data model for QML
     calculatedDataChanged = Signal()
     def getCalculatedData(self):
+        logging.info("")
         return self._calculated_data_model.asDataModel()
     calculatedData = Property('QVariant', getCalculatedData, notify=calculatedDataChanged)
 
     # Fitables model for QML
     fitablesChanged = Signal()
     def getFitables(self):
+        logging.info("")
         return self._fitables_model.asModel()
     fitables = Property('QVariant', getFitables, notify=fitablesChanged)
 

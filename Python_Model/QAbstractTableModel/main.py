@@ -7,7 +7,8 @@ from PySide2.QtWidgets import QApplication
 from PySide2.QtQml import QQmlApplicationEngine
 
 from PySide2.QtCore import QObject, Signal, Slot, Property
-from PySide2.QtCore import QAbstractListModel, QAbstractTableModel, QModelIndex, QByteArray
+from PySide2.QtCore import QAbstractItemModel, QAbstractListModel, QAbstractTableModel
+from PySide2.QtCore import QModelIndex, QByteArray
 
 #########
 ### MODEL
@@ -23,14 +24,17 @@ from PySide2.QtCore import QAbstractListModel, QAbstractTableModel, QModelIndex,
 # https://github.com/eyllanesc/stackoverflow/blob/master/questions/55610163/main.qml
 # https://github.com/blikoon/QmlTableViewDemo
 
-class ExperimentalDataModel(QAbstractTableModel):
+class TableModel(QAbstractTableModel):
+    HeaderRole = Qt.UserRole + 1
+    DataRole = Qt.UserRole + 2
 
     def __init__(self, parent=None):
         """Class constructor."""
         super().__init__(parent)
-        self._header = list()
-        self._data = list()
-        print(self.roleNames())
+        #self._header = list()
+        #self._data = list()
+        self._header = ["Xobs", "Yobs", "sYobs"]
+        self._data = [[i, random.randrange(1000), random.randrange(1000)] for i in range(10)]
 
     def rowCount(self, parent=QModelIndex()):
         """Number of rows in the model."""
@@ -43,6 +47,17 @@ class ExperimentalDataModel(QAbstractTableModel):
         except IndexError:
             return len(self._header)
 
+    def roleNames(self):
+        #result = QAbstractTableModel.roleNames(self)
+        #result[TableModel.HeaderRole] = b'headerRole'
+        #result[TableModel.DataRole] = b'dataRole'
+        #return result
+        return {
+            TableModel.HeaderRole: b'headerRole',
+            TableModel.DataRole: b'dataRole',
+            Qt.DisplayRole: b'display', # similar to the 'dataRole'; needed for QML ChartView
+        }
+
     def clear(self):
         """Clear all data in model."""
         self.beginResetModel()
@@ -50,87 +65,183 @@ class ExperimentalDataModel(QAbstractTableModel):
         self._header = list()
         self.endResetModel()
 
-    def data(self, index, role=Qt.DisplayRole):
-        """Returns the data stored under the given role for the item referred to by the index.
+    def data(self, index, role):
         """
-        if not index.isValid() or not role == Qt.DisplayRole:
+        Returns the data stored under the given role for the item referred to by the index.
+        """
+        if not index.isValid():
             return None
-        try:
+        if role == TableModel.HeaderRole:
+            return self._header[index.column()]
+        if role == TableModel.DataRole or role == Qt.DisplayRole:
             return '{:.4f}'.format(self._data[index.row()][index.column()])
-        except IndexError:
-            #print("Cannot access model data at index %s", index)
-            return None
-        except:
-            return None
-
-    #@Slot('QModelIndex', str, int, result=bool)
-    def setData(self, index, value, role=Qt.EditRole):
-        """Set data in model."""
-        if not index.isValid() or not role == Qt.EditRole:
-            return False
-        try:
-            self._data[index.row()][index.column()] = float(value)
-            self.dataChanged.emit(index, index)
-            return True
-        except IndexError:
-            #print("Cannot access model data at index %s", index)
-            return False
-        except:
-            return False
-
-    @Slot(int, Qt.Orientation, result='QVariant')
-    def headerData(self, section, orientation=Qt.Horizontal, role=Qt.DisplayRole):
-        """Get headers."""
-        if role != Qt.DisplayRole:
-            return None
-        if orientation == Qt.Horizontal:
-            try:
-                return self._header[section]
-            except IndexError:
-                return None
-        if orientation == Qt.Vertical:
-            return str(section + 1)
         return None
 
-    @Slot(int, Qt.Orientation, 'QVariant', int, result=bool)
-    def setHeaderData(self, section, orientation, value, role=Qt.EditRole):
-        """Sets the data for the given role and section in the header
-        with the specified orientation to the value supplied.
+    def setData(self, index, value, role):
         """
-        if orientation != Qt.Horizontal or role != Qt.EditRole :
+        Reimplementation.
+        Set data in model.
+        :param index: QModelIndex
+        :param value: QVariant
+        :param role: int
+        :return: bool
+        """
+        if not index.isValid():
             return False
-        try:
-            self._header[section] = str(value)
-            self.headerDataChanged.emit(orientation, section, section)
+        if role == TableModel.HeaderRole:
+            self._header[index.column()] = str(value)
+            self.dataChanged.emit(index, index, [role])
             return True
-        except IndexError:
-            return False
+        if role == TableModel.DataRole:
+            self._data[index.row()][index.column()] = float(value)
+            self.dataChanged.emit(index, index, [role])
+            return True
+        return False
+
+    def entireData(self):
+        return self._data
+
+    def entireHeader(self):
+        return self._header
+
+    @Slot(int, result=str)
+    def header(self, column):
+        return self._header[column]
 
     @Slot()
     def setModelRandomly(self):
         """Random change of header and data in columns 1 and 2."""
         for column in range(self.columnCount()):
-            self.setHeaderData(column, Qt.Horizontal, random.choice(string.ascii_letters))
+            self.setData(self.index(0, column), random.choice(string.ascii_letters), TableModel.HeaderRole)
         for row in range(self.rowCount()):
-            self.setData(self.index(row, 1), random.randrange(1000))
-            self.setData(self.index(row, 2), random.randrange(1000))
+            self.setData(self.index(row, 1), random.randrange(1000), TableModel.DataRole)
+            self.setData(self.index(row, 2), random.randrange(1000), TableModel.DataRole)
 
-    #def appendRow(self, row):
-    #    #for item in row:
-    #        #print (item, type(item))
-    #    self._data.append(row)
-    #    first_column_index = 0
-    #    last_column_index = self.columnCount() - 1
-    #    last_row_index = self.rowCount() - 1
-    #    top_left = self.index(last_row_index, first_column_index)
-    #    bottom_right = self.index(last_row_index, last_column_index)
-    #    self.dataChanged.emit(top_left, bottom_right, self.roleNames())
 
-    def _setData(self, data):
-        self._data = data
+#
+class FitablesModel(QAbstractListModel):
+    NameRole = Qt.UserRole + 1
+    ValueRole = Qt.UserRole + 2
+    ErrorRole = Qt.UserRole + 3
+    RefineRole = Qt.UserRole + 4
 
-    def _setHeaderData(self, header):
-        self._header = header
+    def __init__(self, parent=None):
+        """Class constructor."""
+        super().__init__(parent)
+        #self._fitables = list()
+        self._fitables = [
+            {'name': 'a', 'value': 3.932, 'error': 0.120, 'refine': True},
+            {'name': 'b', 'value': 12.021, 'error': 0, 'refine': False},
+            {'name': 'c', 'value': 7.243, 'error': 0, 'refine': False},
+        ]
+
+    def rowCount(self, parent=QModelIndex()):
+        """Number of rows in the model."""
+        return len(self._fitables)
+
+    def roleNames(self):
+        return {
+            FitablesModel.NameRole: b'nameRole',
+            FitablesModel.ValueRole: b'valueRole',
+            FitablesModel.ErrorRole: b'errorRole',
+            FitablesModel.RefineRole: b'refineRole',
+        }
+
+    def clear(self):
+        """Clear all data in model."""
+        self.beginResetModel()
+        self._fitables = list()
+        self.endResetModel()
+
+    def data(self, index, role):
+        """
+        Returns the data stored under the given role for the item referred to by the index.
+        """
+        if not index.isValid():
+            return None
+        if role == FitablesModel.NameRole:
+            return self._fitables[index.row()]['name']
+        if role == FitablesModel.ValueRole:
+            return self._fitables[index.row()]['value']
+        if role == FitablesModel.ErrorRole:
+            return self._fitables[index.row()]['error']
+        if role == FitablesModel.RefineRole:
+            return self._fitables[index.row()]['refine']
+        return None
+
+    def setData(self, index, value, role):
+        """
+        Reimplementation.
+        Set data in model.
+        :param index: QModelIndex
+        :param value: QVariant
+        :param role: int
+        :return: bool
+        """
+        if not index.isValid():
+            return False
+        if role == FitablesModel.NameRole:
+            self._fitables[index.row()]['name'] = str(value)
+            self.dataChanged.emit(index, index, [role])
+            return True
+        if role == FitablesModel.ValueRole:
+            self._fitables[index.row()]['value'] = float(value)
+            self.dataChanged.emit(index, index, [role])
+            return True
+        if role == FitablesModel.ErrorRole:
+            self._fitables[index.row()]['error'] = float(value)
+            self.dataChanged.emit(index, index, [role])
+            return True
+        if role == FitablesModel.RefineRole:
+            self._fitables[index.row()]['refine'] = bool(value)
+            self.dataChanged.emit(index, index, [role])
+            return True
+        return False
+
+    def entireData(self):
+        return self._fitables
+
+    @Slot()
+    def setModelRandomly(self):
+        for row in range(self.rowCount()):
+            self.setData(self.index(row, 0), random.choice(string.ascii_letters), FitablesModel.NameRole)
+            self.setData(self.index(row, 0), random.randrange(1000), FitablesModel.ValueRole)
+            self.setData(self.index(row, 0), random.random(), FitablesModel.ErrorRole)
+            self.setData(self.index(row, 0), bool(random.randrange(2)), FitablesModel.RefineRole)
+
+
+#########
+### MODEL
+#########
+
+class PythonModel(QObject):
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._experimentalData = TableModel()
+        self._fitables = FitablesModel()
+        self._project = {}
+        self._project["experimental_data"] = {}
+        self._project["experimental_data"]["header"] = self._experimentalData.entireHeader()
+        self._project["experimental_data"]["data"] = self._experimentalData.entireData()
+        self._project["fitables"] = self._fitables.entireData()
+
+    def _getExperimentalData(self):
+        return self._experimentalData
+
+    def _getFitables(self):
+        return self._fitables
+
+    dataChanged = Signal()
+
+    experimentalData = Property('QVariant', _getExperimentalData, notify=dataChanged)
+    fitables = Property('QVariant', _getFitables, notify=dataChanged)
+
+    @Slot(result='QVariant')
+    def refine(self):
+        self._experimentalData.setModelRandomly()
+        self._fitables.setModelRandomly()
+        print(self._project)
 
 ########
 ### MAIN
@@ -141,12 +252,11 @@ if __name__ == '__main__':
 
     app = QApplication(sys.argv)
 
-    experimentalDataModel = ExperimentalDataModel()
-    experimentalDataModel._setHeaderData(["Xobs", "Ycalc", "Yobs"])
-    experimentalDataModel._setData([[i, random.randrange(1000), random.randrange(1000)] for i in range(10)])
+    pythonModel = PythonModel()
 
     engine = QQmlApplicationEngine()
-    engine.rootContext().setContextProperty("experimentalDataModel", experimentalDataModel)
+    engine.rootContext().setContextProperty("pythonModel", pythonModel)
+
     engine.load(QUrl.fromLocalFile(os.path.join(os.path.dirname(sys.argv[0]), "gui.qml")))
 
     if not engine.rootObjects():

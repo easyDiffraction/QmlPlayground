@@ -11,9 +11,11 @@ ApplicationWindow {
     property int rowHeight: 44
     property int cellSpacing: 1
     property int cellPadding: 5
-    property int maxRowCountToDisplay: 6
+    property int maxRowCountToDisplay: 4
     property string rowColor: 'whitesmoke'
-    property string alternateRowColor: 'lightgray'
+    property string alternateRowColor: '#ddd'//'lightgray'
+    property string headerBackgroundColor: 'coral'
+    property string headerColor: 'steelblue'
 
     //////////////////////////////////////////
     //////////////////////////////////////////
@@ -27,7 +29,7 @@ ApplicationWindow {
         //////////////////////////////////////////
         //////////////////////////////////////////
 
-        Text { text: "Parameters (Analysis Tab)"; color: "darkblue" }
+        Text { text: "Parameters (Analysis Tab)"; color: headerColor }
 
         ScrollView {
             Layout.fillWidth: true
@@ -44,6 +46,96 @@ ApplicationWindow {
 
                 // Use python model
                 model: pythonModel.fitables_list
+
+                header: Rectangle {
+                    width: parent.width
+                    height: rowHeight
+                    color: "red"
+
+                    RowLayout {
+                        width: parent.width
+                        spacing: cellSpacing
+
+                        //////////////////////////////////////////
+
+                        // First column: Current row number
+                        Rectangle {
+                            color: headerBackgroundColor
+                            Layout.fillHeight: true
+                            Layout.preferredWidth: rowHeight
+                            Text {
+                                anchors.verticalCenter: parent.verticalCenter
+                                padding: cellPadding
+                                text: "No."
+                            }
+                        }
+
+                        //////////////////////////////////////////
+
+                        // Next column: name
+                        Rectangle {
+                            color: headerBackgroundColor
+                            Layout.fillHeight: true
+                            Layout.fillWidth: true
+                            Layout.preferredWidth: 2*rowHeight
+                            Text {
+                                anchors.verticalCenter: parent.verticalCenter
+                                padding: cellPadding
+                                text: "Parameter"
+                            }
+                        }
+
+                        //////////////////////////////////////////
+
+                        // Next column: value
+                        Rectangle {
+                            color: headerBackgroundColor
+                            Layout.fillHeight: true
+                            Layout.fillWidth: true
+                            Layout.preferredWidth: rowHeight
+                            Text {
+                                anchors.verticalCenter: parent.verticalCenter
+                                padding: cellPadding
+                                text: "Value"
+                            }
+                        }
+
+                        //////////////////////////////////////////
+
+                        // Next column: error
+                        Rectangle {
+                            color: headerBackgroundColor
+                            Layout.fillHeight: true
+                            Layout.fillWidth: true
+                            Layout.preferredWidth: rowHeight
+                            Text {
+                                anchors.verticalCenter: parent.verticalCenter
+                                padding: cellPadding
+                                text: "Error"
+                            }
+                        }
+
+                        //////////////////////////////////////////
+
+                        // Next column: refine
+                        Rectangle {
+                            color: headerBackgroundColor
+                            Layout.preferredHeight: rowHeight
+                            Layout.preferredWidth: rowHeight
+                        }
+
+                        //////////////////////////////////////////
+
+                    }
+
+
+
+
+
+
+
+
+                }
 
                 // Table row view
                 delegate: Rectangle {
@@ -81,14 +173,15 @@ ApplicationWindow {
                                 anchors.verticalCenter: parent.verticalCenter
                                 padding: cellPadding
                                 text: {
-                                    const datablock = pythonModel.fitables_list[index].datablock
-                                    const group = pythonModel.fitables_list[index].group
-                                    const subgroup = pythonModel.fitables_list[index].subgroup
-                                    const fitable = pythonModel.fitables_list[index].fitable
+                                    const fitable = pythonModel.fitables_list[index]
+                                    const datablock = fitable.datablock
+                                    const group = fitable.group
+                                    const subgroup = fitable.subgroup
+                                    const name = fitable.name
                                     if (group && subgroup) {
-                                        return `${datablock} ${group} ${subgroup} ${fitable}`
+                                        return `${datablock} ${group} ${subgroup} ${name}`
                                     } else {
-                                        return `${datablock} ${fitable}`
+                                        return `${datablock} ${name}`
                                     }
                                 }
                             }
@@ -105,17 +198,19 @@ ApplicationWindow {
                             TextEdit {
                                 anchors.verticalCenter: parent.verticalCenter
                                 padding: cellPadding
+                                font.weight: pythonModel.fitables_list[index].refine ? Font.Bold : Font.Normal
                                 text: pythonModel.fitables_list[index].value
                                 onEditingFinished: {
+                                    const fitable = pythonModel.fitables_list[index]
+                                    const datablock = fitable.datablock
+                                    const group = fitable.group
+                                    const subgroup = fitable.subgroup
+                                    const name = fitable.name
                                     let obj = pythonModel.data
-                                    const datablock = pythonModel.fitables_list[index].datablock
-                                    const group = pythonModel.fitables_list[index].group
-                                    const subgroup = pythonModel.fitables_list[index].subgroup
-                                    const fitable = pythonModel.fitables_list[index].fitable
                                     if (group && subgroup) {
-                                        obj[datablock][group][subgroup][fitable].value = text
+                                        obj[datablock][group][subgroup][name].value = text
                                     } else {
-                                        obj[datablock][fitable].value = text
+                                        obj[datablock][name].value = text
                                     }
                                     pythonModel.data = obj
                                 }
@@ -148,15 +243,16 @@ ApplicationWindow {
                                 checked: pythonModel.fitables_list[index].refine
                                 //onToggled: atomSiteModel.modify(index, model.label, model.x, model.y, model.z, checked)
                                 onToggled: {
+                                    const fitable = pythonModel.fitables_list[index]
+                                    const datablock = fitable.datablock
+                                    const group = fitable.group
+                                    const subgroup = fitable.subgroup
+                                    const name = fitable.name
                                     let obj = pythonModel.data
-                                    const datablock = pythonModel.fitables_list[index].datablock
-                                    const group = pythonModel.fitables_list[index].group
-                                    const subgroup = pythonModel.fitables_list[index].subgroup
-                                    const fitable = pythonModel.fitables_list[index].fitable
                                     if (group && subgroup) {
-                                        obj[datablock][group][subgroup][fitable].refine = checked
+                                        obj[datablock][group][subgroup][name].refine = checked
                                     } else {
-                                        obj[datablock][fitable].refine = checked
+                                        obj[datablock][name].refine = checked
                                     }
                                     pythonModel.data = obj
                                 }
@@ -173,12 +269,14 @@ ApplicationWindow {
         //////////////////////////////////////////
         //////////////////////////////////////////
 
-        Text { text: "Cell (Sample Model Tab)"; color: "darkblue" }
+        Item { Layout.fillHeight: true }
+
+        Text { text: "Cell (Sample Model Tab)"; color: headerColor }
 
         ScrollView {
             Layout.fillWidth: true
-            Layout.preferredHeight: rowHeight
-            Layout.maximumHeight: rowHeight
+            Layout.preferredHeight: rowHeight * 2 + cellSpacing
+            Layout.maximumHeight: rowHeight * 2 + cellSpacing
             clip: true
 
             ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
@@ -189,7 +287,7 @@ ApplicationWindow {
                 spacing: cellSpacing
 
                 // Use single row model
-                model: 1
+                model: 2
 
                 // Table row view
                 delegate: Rectangle {
@@ -210,14 +308,40 @@ ApplicationWindow {
                             Layout.fillHeight: true
                             Layout.fillWidth: true
                             TextEdit {
+                                enabled: index
                                 anchors.verticalCenter: parent.verticalCenter
                                 padding: cellPadding
-                                text: pythonModel.cell_dict.cell_length_a.value
+                                font.weight: pythonModel.cell_dict.cell_length_a.refine ? Font.Bold : Font.Normal
+                                text: index == 0 ? pythonModel.cell_dict.cell_length_a.title : pythonModel.cell_dict.cell_length_a.value
                                 onEditingFinished: {
                                     const datablock = pythonModel.cell_dict.datablock
                                     let obj = pythonModel.data
                                     obj[datablock].cell_length_a.value = text
                                     pythonModel.data = obj
+                                }
+                            }
+                            MouseArea {
+                                anchors.fill: parent
+                                acceptedButtons: Qt.RightButton
+                                onClicked: {
+                                    contextMenuA.x = mouse.x
+                                    contextMenuA.y = mouse.y
+                                    contextMenuA.open()
+                                }
+                                Menu {
+                                    id: contextMenuA
+                                    MenuItem {
+                                        CheckBox {
+                                            checked: pythonModel.cell_dict.cell_length_a.refine
+                                            text: qsTr("refine")
+                                            onToggled: {
+                                                const datablock = pythonModel.cell_dict.datablock
+                                                let obj = pythonModel.data
+                                                obj[datablock].cell_length_a.refine = checked
+                                                pythonModel.data = obj
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -230,9 +354,11 @@ ApplicationWindow {
                             Layout.fillHeight: true
                             Layout.fillWidth: true
                             TextEdit {
+                                enabled: index
                                 anchors.verticalCenter: parent.verticalCenter
                                 padding: cellPadding
-                                text: pythonModel.cell_dict.cell_length_b.value
+                                font.weight: pythonModel.cell_dict.cell_length_b.refine ? Font.Bold : Font.Normal
+                                text: index == 0 ? pythonModel.cell_dict.cell_length_b.title : pythonModel.cell_dict.cell_length_b.value
                                 onEditingFinished: {
                                     const datablock = pythonModel.cell_dict.datablock
                                     let obj = pythonModel.data
@@ -250,9 +376,11 @@ ApplicationWindow {
                             Layout.fillHeight: true
                             Layout.fillWidth: true
                             TextEdit {
+                                enabled: index
                                 anchors.verticalCenter: parent.verticalCenter
                                 padding: cellPadding
-                                text: pythonModel.cell_dict.cell_length_c.value
+                                font.weight: pythonModel.cell_dict.cell_length_c.refine ? Font.Bold : Font.Normal
+                                text: index == 0 ? pythonModel.cell_dict.cell_length_c.title : pythonModel.cell_dict.cell_length_c.value
                                 onEditingFinished: {
                                     const datablock = pythonModel.cell_dict.datablock
                                     let obj = pythonModel.data
@@ -270,9 +398,11 @@ ApplicationWindow {
                             Layout.fillHeight: true
                             Layout.fillWidth: true
                             TextEdit {
+                                enabled: index
                                 anchors.verticalCenter: parent.verticalCenter
                                 padding: cellPadding
-                                text: pythonModel.cell_dict.cell_angle_alpha.value
+                                font.weight: pythonModel.cell_dict.cell_angle_alpha.refine ? Font.Bold : Font.Normal
+                                text: index == 0 ? pythonModel.cell_dict.cell_angle_alpha.title : pythonModel.cell_dict.cell_angle_alpha.value
                                 onEditingFinished: {
                                     const datablock = pythonModel.cell_dict.datablock
                                     let obj = pythonModel.data
@@ -290,9 +420,11 @@ ApplicationWindow {
                             Layout.fillHeight: true
                             Layout.fillWidth: true
                             TextEdit {
+                                enabled: index
                                 anchors.verticalCenter: parent.verticalCenter
                                 padding: cellPadding
-                                text: pythonModel.cell_dict.cell_angle_beta.value
+                                font.weight: pythonModel.cell_dict.cell_angle_beta.refine ? Font.Bold : Font.Normal
+                                text: index == 0 ? pythonModel.cell_dict.cell_angle_beta.title : pythonModel.cell_dict.cell_angle_beta.value
                                 onEditingFinished: {
                                     const datablock = pythonModel.cell_dict.datablock
                                     let obj = pythonModel.data
@@ -310,15 +442,16 @@ ApplicationWindow {
                             Layout.fillHeight: true
                             Layout.fillWidth: true
                             TextEdit {
+                                enabled: index
                                 anchors.verticalCenter: parent.verticalCenter
                                 padding: cellPadding
-                                text: pythonModel.cell_dict.cell_angle_gamma.value
+                                font.weight: pythonModel.cell_dict.cell_angle_gamma.refine ? Font.Bold : Font.Normal
+                                text: index == 0 ? pythonModel.cell_dict.cell_angle_gamma.title : pythonModel.cell_dict.cell_angle_gamma.value
                                 onEditingFinished: {
                                     const datablock = pythonModel.cell_dict.datablock
                                     let obj = pythonModel.data
                                     obj[datablock].cell_angle_gamma.value = text
                                     pythonModel.data = obj
-                                    pythonModel.update_rhochi_model()
                                 }
                             }
                         }
@@ -335,7 +468,7 @@ ApplicationWindow {
 
         Item { Layout.fillHeight: true }
 
-        Text { text: "Buttons"; color: "darkblue" }
+        Text { text: "Buttons"; color: headerColor }
 
         RowLayout {
             Layout.fillWidth: true
@@ -346,7 +479,7 @@ ApplicationWindow {
 
             Button {
                 Layout.fillWidth: true
-                text: 'refine'
+                text: 'Start fitting'
                 onClicked: {
                     info.open()
                     infoLabel.text = ""
@@ -365,7 +498,7 @@ ApplicationWindow {
 
             Button {
                 Layout.fillWidth: true
-                text: 'random change cell_length_a'
+                text: 'Random change "a"'
                 onClicked: {
                     pythonModel.random_change_cell_length_a()
                 }

@@ -10,7 +10,7 @@ Rectangle {
     property int borderWidth: 1
     property int cellWidth: 150
     property int cellHeight: 30
-    property int rowCountToDisplayWithoutHeader: 4
+    property int rowCountToDisplayWithoutHeader: 3
 
     property string rowBackgroundColor: 'white'
     property string alternateRowBackgroundColor: '#f7f7f7'
@@ -48,7 +48,7 @@ Rectangle {
                     verticalAlignment: Text.AlignVCenter
                     horizontalAlignment: Text.AlignRight
                     enabled: false
-                    text: display
+                    text: model.display
                 }
             }
         }
@@ -76,8 +76,8 @@ Rectangle {
                     verticalAlignment: Text.AlignVCenter
                     horizontalAlignment: Text.AlignRight
                     enabled: editable
-                    text: display
-                    onEditingFinished: edit = text
+                    text: model.display
+                    onEditingFinished: model.edit = text
                 }
             }
         }

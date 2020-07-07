@@ -44,19 +44,11 @@ ApplicationWindow {
         Rectangle { width: parent.width; height: cellHeight * proxy.pyListOfInt.length; border.color: headerBorderColor; Row { spacing: 20
                 ListView { width: cellWidth; height: parent.parent.height
                     model: proxy.pyListOfInt
-                    delegate: TextInput { text: modelData; onEditingFinished: modelData = text }
+                    delegate: TextInput { text: modelData; onEditingFinished: proxy.pyListOfInt = [text, index] }
                 }
                 ListView { width: cellWidth; height: parent.parent.height
                     model: proxy.pyListOfInt
-                    delegate: TextInput { text: modelData; onEditingFinished: modelData = text }
-                }
-                ListView { width: cellWidth; height: parent.parent.height
-                    model: proxy.pyListOfInt
-                    delegate: TextInput { text: modelData; onEditingFinished: { let obj = proxy.pyListOfInt; obj[index] = text; proxy.pyListOfInt = obj } }
-                }
-                ListView { width: cellWidth; height: parent.parent.height
-                    model: proxy.pyListOfInt
-                    delegate: TextInput { text: modelData; onEditingFinished: { let obj = proxy.pyListOfInt; obj[index] = text; proxy.pyListOfInt = obj } }
+                    delegate: TextInput { text: modelData; onEditingFinished: proxy.pyListOfInt = [text, index] }
                 }
             }}
         Item { height: 0.5*cellHeight; width: 1 }
@@ -97,14 +89,18 @@ ApplicationWindow {
         // pyListOfInt2d (TableView)
         // doesn't work
         Label { text: "pyListOfInt2d (TableView): " + JSON.stringify(proxy.pyListOfInt2d); color: "red" }
-        Rectangle { width: parent.width; height: cellHeight * proxy.pyListOfInt2d.length; border.color: headerBorderColor; Row { spacing: 200
+        Rectangle { width: parent.width; height: cellHeight * 3; border.color: headerBorderColor; Row { spacing: 200
                 TableView { width: cellWidth; height: parent.parent.height; columnSpacing: 20
                     model: proxy.pyListOfInt2d
-                    delegate: TextInput { text: proxy.pyListOfInt2d[row][column] }
+                    delegate: TextInput { text: "111" }
                 }
                 TableView { width: cellWidth; height: parent.parent.height; columnSpacing: 20
-                    model: proxy.pyListOfInt2d
-                    delegate: TextInput { text: modelData[column] }
+                //    model: proxy.pyListOfInt2d
+                //    delegate: TextInput { text: proxy.pyListOfInt2d[row][column] }
+                }
+                TableView { width: cellWidth; height: parent.parent.height; columnSpacing: 20
+                //    model: proxy.pyListOfInt2d
+                //    delegate: TextInput { text: modelData[column] }
                 }
             }}
         // pyListOfInt2d (TableView)
@@ -117,7 +113,7 @@ ApplicationWindow {
         Rectangle { width: parent.width; height: cellHeight * proxy.pyListOfInt2d.length; border.color: headerBorderColor; Row { spacing: 200
                 ListView { width: cellWidth; height: parent.parent.height
                     model: proxy.pyListOfInt2d
-                    delegate: TextInput { text: proxy.pyListOfInt2d[index][0] }
+                    //delegate: TextInput { text: proxy.pyListOfInt2d[index][0] }
                 }
             }}
         // pyListOfInt2d (ListView)

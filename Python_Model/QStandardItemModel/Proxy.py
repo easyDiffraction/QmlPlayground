@@ -26,9 +26,9 @@ class ProjectModel(QObject):
             'phases': {
                 'Fe3O4': {
                     'cell': {
-                        'a': { 'value': 9.5, 'error': 0.32, 'refine': True },
-                        'b': { 'value': 10.0, 'error': 0.22, 'refine': False },
-                        'c': { 'value': 11.2, 'error': 0.21, 'refine': False },
+                        'a': { 'value': 13.5, 'error': 0.62, 'refine': False },
+                        'b': { 'value': 10.0, 'error': 0.42, 'refine': True },
+                        'c': { 'value': 11.2, 'error': 0.51, 'refine': False },
                     }
                 },
                 'impurity': {
@@ -66,15 +66,19 @@ class ProjectModel(QObject):
         self.getByPath(keys[:-1])[keys[-1]][index] = value
 
     def phasesCount(self):
+        """Returns number of phases in the project."""
         return len(self._data['phases'].keys())
 
     def experimentsCount(self):
+        """Returns number of experiments in the project."""
         return len(self._data['experiments'].keys())
 
     def phasesIds(self):
+        """Returns labels of the phases in the project."""
         return list(self._data['phases'].keys())
 
     def experimentsIds(self):
+        """Returns labels of the experiments in the project."""
         return list(self._data['experiments'].keys())
 
     def asDict(self):
@@ -118,7 +122,7 @@ class MeasuredDataItemModel(QObject):
                 dataModel.setData(index, value, Qt.DisplayRole)
         return headerModel, dataModel
 
-    def asHeaderModel(self):
+    def asHeadersModel(self):
         """Return header model."""
         return self._headerModel
 
@@ -188,7 +192,7 @@ class CalculatedDataItemModel(QObject):
         keys = ["experiments", experiment_id, "calculated", "calc"]
         self._project.setByPathAndIndex(keys, row_index, value)
 
-    def asHeaderModel(self):
+    def asHeadersModel(self):
         """Return header model."""
         return self._headerModel
 
@@ -281,7 +285,7 @@ class Proxy(QObject):
     # Measured data header model for QML
     measuredDataHeaderChanged = Signal()
     def getMeasuredDataHeader(self):
-        return self._measuredDataModel.asHeaderModel()
+        return self._measuredDataModel.asHeadersModel()
     measuredDataHeader = Property('QVariant', getMeasuredDataHeader, notify=measuredDataHeaderChanged)
 
     # Measured data model for QML
@@ -293,7 +297,7 @@ class Proxy(QObject):
     # Calculated data header model for QML
     calculatedDataHeaderChanged = Signal()
     def getCalculatedDataHeader(self):
-        return self._calculatedDataModel.asHeaderModel()
+        return self._calculatedDataModel.asHeadersModel()
     calculatedDataHeader = Property('QVariant', getCalculatedDataHeader, notify=calculatedDataHeaderChanged)
 
     # Calculated data model for QML

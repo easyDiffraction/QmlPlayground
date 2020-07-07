@@ -1,0 +1,8 @@
+module Globals
+
+singleton Constants 1.0 Constants.qml
+singleton Experiment 1.0 Experiment.qml
+singleton Icon 1.0 Icon.qml
+singleton Images 1.0 Images.qml
+singleton Project 1.0 Project.qml
+singleton Variable 1.0 Variable.qml

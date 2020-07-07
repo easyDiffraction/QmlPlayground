@@ -1,0 +1,5 @@
+module Animations
+
+BarShow 1.0 BarShow.qml
+TranslationChange 1.0 TranslationChange.qml
+ThemeChange 1.0 ThemeChange.qml

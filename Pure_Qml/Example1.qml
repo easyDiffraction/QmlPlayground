@@ -7,6 +7,6 @@ Rectangle {
 
     Text {
         anchors.centerIn: parent
-        text: "Hello, World!"
+        text: "Hello, Worlfd skdjbfkd!"
     }
 }
